@@ -11,6 +11,7 @@ class subinfo(info.infoclass):
         self.webpage = "https://owncloud.org"
 
     def setDependencies(self):
+        self.buildDependencies["craft/craft-blueprints-owncloud"] = "default"
         self.buildDependencies["dev-utils/cmake"] = "default"
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = "default"
         self.runtimeDependencies["libs/qt5/qtbase"] = "default"
