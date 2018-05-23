@@ -34,7 +34,7 @@ class Package(CMakePackageBase):
         self.subinfo.options.configure.args = "-DUNIT_TESTING=1 -DWITH_TESTING=1 -DWITH_CRASHREPORTER=1"
 
     def symbolsDir(self):
-        return os.path.join(self.imageDir(), 'symbols')
+        return os.path.join(self.imageDir(), 'share', 'symbols')
 
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
     def dumpSymbols(self, binaryFile):
@@ -60,6 +60,8 @@ class Package(CMakePackageBase):
         symbolFile = os.path.join(outputPath, "%s.sym" % symbolFileBasename)
         outputFile = open(symbolFile, 'wb')
         outputFile.write(outBytes)
+
+        CraftCore.log.info('Writing symbols to: %s' % symbolFile)
 
     def install(self):
         if not CMakePackageBase.install(self):
