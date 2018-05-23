@@ -6,10 +6,10 @@ import re
 
 class subinfo(info.infoclass):
     def setTargets(self):
-        for ver in ["master"]:
+        for ver in ["libcrashreporter-qt-msvc"]:
             self.svnTargets[ver] = f"[git]https://github.com/owncloud/client|{ver}|"
 
-        self.defaultTarget = 'master'
+        self.defaultTarget = 'libcrashreporter-qt-msvc'
         self.description = "ownCloud Desktop Client"
         self.webpage = "https://owncloud.org"
 
