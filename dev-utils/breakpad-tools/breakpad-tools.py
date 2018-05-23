@@ -5,7 +5,7 @@ import shutil
 from Package.MSBuildPackageBase import *
 
 class subinfo(info.infoclass):
-    """We use Jon Turney's fork which adds support for MinGW"""
+    """We use Jon Turney's fork which adds support for MinGW and a python script to fetch deps"""
     def setTargets(self):
         for ver in ["pecoff-dwarf-on-git-20171117-fetch-externals-on-win"]:
             self.svnTargets[ver] = f"[git]https://github.com/dschmidt/google-breakpad|{ver}|"
@@ -44,7 +44,14 @@ class Package(MSBuildPackageBase):
         # There should be no reason to use the one or the other, if ninja works one day and msvs still does not - feel free to switch
         depth = os.path.join(self.sourceDir(), 'src')
         cwd = depth
-        utils.system(['python2', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd)
+
+        # WORKAROUND: Visual Studio Detection is broken in containers
+        env = os.environ.copy()
+        msvcString = CraftCore.compiler.abi.split("_")[0]
+        msvcVersion = msvcString[4:]
+        env["GYP_MSVS_VERSION"] = msvcVersion
+
+        utils.system(['python2', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd, env=env)
 
         MSBuildPackageBase.configure(self)
         return True
