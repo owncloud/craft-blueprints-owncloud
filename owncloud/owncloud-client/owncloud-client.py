@@ -45,7 +45,11 @@ class Package(CMakePackageBase):
 
         outBytes = out.getvalue()
         firstLine = str(outBytes.splitlines()[0], 'utf-8')
-        moduleLine = re.match("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)", firstLine)
+        CraftCore.log.info('Module line: %s' % firstLine)
+        regex = "^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)"
+        CraftCore.log.debug('regex: %s' % regex)
+        moduleLine = re.match(regex, firstLine)
+        CraftCore.log.debug('regex: %s' % moduleLine)
         outputPath = os.path.join(self.symbolsDir(), moduleLine.group(2),
                              moduleLine.group(1))
 
