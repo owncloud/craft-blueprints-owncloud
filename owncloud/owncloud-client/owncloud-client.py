@@ -31,7 +31,12 @@ class Package(CMakePackageBase):
     def __init__(self):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
-        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 -DWITH_TESTING=1 -DWITH_CRASHREPORTER=1"
+
+        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 -DWITH_TESTING=1"
+
+        if 'ENABLE_CRASHREPORTS' in os.environ:
+            if os.environ['ENABLE_CRASHREPORTS'] == 'true':
+                self.subinfo.options.configure.args += " -DWITH_CRASHREPORTER=1"
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
@@ -77,7 +82,6 @@ class Package(CMakePackageBase):
     def createPackage(self):
         sep = '\\%s' % os.sep
         regex = r"symbols%s.*" % sep
-        print("regex: %s" % regex)
         self.whitelist.append(re.compile(regex))
 
         return TypePackager.createPackage(self)
