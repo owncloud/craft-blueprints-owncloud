@@ -32,11 +32,10 @@ class Package(CMakePackageBase):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
 
-        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 -DWITH_TESTING=1"
+        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 "
 
-        if 'ENABLE_CRASHREPORTS' in os.environ:
-            if os.environ['ENABLE_CRASHREPORTS'] == 'true':
-                self.subinfo.options.configure.args += " -DWITH_CRASHREPORTER=1"
+        if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
+                self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
