@@ -19,6 +19,7 @@ class subinfo(info.infoclass):
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = "default"
         self.buildDependencies["dev-utils/breakpad-tools"] = "default"
         self.runtimeDependencies["libs/qt5/qtbase"] = "default"
+        self.runtimeDependencies["libs/qt5/qttranslations"] = "default"
         self.runtimeDependencies["libs/qt5/qtsvg"] = "default"
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = "default"
         self.runtimeDependencies["libs/qt5/qtwebkit"] = "default"
