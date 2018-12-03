@@ -60,7 +60,7 @@ class Package(CMakePackageBase):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
 
-        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 "
+        self.subinfo.options.configure.args = "-DUNIT_TESTING=OFF "
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
                 self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
