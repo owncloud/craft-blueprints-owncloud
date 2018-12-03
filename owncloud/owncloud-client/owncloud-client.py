@@ -29,7 +29,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["qt-libs/qtkeychain"] = "default"
 
 
-        self.buildDependencies["dev-utils/peparser"] = "default"
+        self.buildDependencies["dev-utils/_msvc/peparser"] = "default"
 
         self.packageDependencyExeEntryPoints = [
             # Client files
