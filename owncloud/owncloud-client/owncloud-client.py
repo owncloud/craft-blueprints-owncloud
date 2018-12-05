@@ -120,21 +120,14 @@ class Package(CMakePackageBase):
         return True
 
     def createPackage(self):
+        if not ('ENABLE_CRASHREPORTS' in os.environ) and not (os.environ['ENABLE_CRASHREPORTS'] == 'True'):
+            CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
+            return TypePackager.createPackage(self)
 
-        if 'ENABLE_CRASHREPORTS' in os.environ:
-          print('ENABLE_CRASHREPORTS')
-          print(os.environ['ENABLE_CRASHREPORTS'])
-          # FIXME: PowerShell specific
-          foo = (os.environ['ENABLE_CRASHREPORTS'] == 'True')
-          print("is true: %s" % foo)
-        else:
-          print('NO ENABLE_CRASHREPORTS')
 
         sep = '\\%s' % os.sep
         regex = r"symbols%s.*" % sep
         self.whitelist.append(re.compile(regex))
-
-
 
         dirs = [
             os.path.join(self.rootdir, 'bin'),
@@ -165,7 +158,6 @@ class Package(CMakePackageBase):
             self.dumpSymbols(absoluteFilename)
 
         return TypePackager.createPackage(self)
-
 
 
 # FIXME: replace with CraftCore.cache.getCommandOutput
