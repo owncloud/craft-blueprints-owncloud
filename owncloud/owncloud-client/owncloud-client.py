@@ -65,6 +65,11 @@ class Package(CMakePackageBase):
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
                 self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
 
+        if 'ENABLE_CRASHREPORTS' in os.environ:
+          print('ENABLE_CRASHREPORTS')
+          print(os.environ['ENABLE_CRASHREPORTS'])
+
+
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
 
