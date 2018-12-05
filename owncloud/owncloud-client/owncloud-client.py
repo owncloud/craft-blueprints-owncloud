@@ -124,7 +124,9 @@ class Package(CMakePackageBase):
         if 'ENABLE_CRASHREPORTS' in os.environ:
           print('ENABLE_CRASHREPORTS')
           print(os.environ['ENABLE_CRASHREPORTS'])
-
+          print(f"is true: {os.environ['ENABLE_CRASHREPORTS'] == True}")
+        else
+          print('NO ENABLE_CRASHREPORTS')
 
         sep = '\\%s' % os.sep
         regex = r"symbols%s.*" % sep
