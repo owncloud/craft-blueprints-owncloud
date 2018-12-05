@@ -16,20 +16,20 @@ class subinfo(info.infoclass):
         self.webpage = "https://owncloud.org"
 
     def setDependencies(self):
-        self.buildDependencies["craft/craft-blueprints-owncloud"] = "default"
-        self.buildDependencies["dev-utils/cmake"] = "default"
-        self.buildDependencies["kde/frameworks/extra-cmake-modules"] = "default"
-        self.buildDependencies["dev-utils/breakpad-tools"] = "default"
-        self.runtimeDependencies["libs/zlib"] = "default"
-        self.runtimeDependencies["libs/qt5/qtbase"] = "default"
-        self.runtimeDependencies["libs/qt5/qttranslations"] = "default"
-        self.runtimeDependencies["libs/qt5/qtsvg"] = "default"
-        self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = "default"
-        self.runtimeDependencies["libs/qt5/qtwebkit"] = "default"
-        self.runtimeDependencies["qt-libs/qtkeychain"] = "default"
+        self.buildDependencies["craft/craft-blueprints-owncloud"] = None
+        self.buildDependencies["dev-utils/cmake"] = None
+        self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
+        self.buildDependencies["dev-utils/breakpad-tools"] = None
+        self.runtimeDependencies["libs/zlib"] = None
+        self.runtimeDependencies["libs/qt5/qtbase"] = None
+        self.runtimeDependencies["libs/qt5/qttranslations"] = None
+        self.runtimeDependencies["libs/qt5/qtsvg"] = None
+        self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
+        self.runtimeDependencies["libs/qt5/qtwebkit"] = None
+        self.runtimeDependencies["qt-libs/qtkeychain"] = None
 
 
-        self.buildDependencies["dev-utils/peparser"] = "default"
+        self.buildDependencies["dev-utils/peparser"] = None
 
         self.packageDependencyExeEntryPoints = [
             # Client files
