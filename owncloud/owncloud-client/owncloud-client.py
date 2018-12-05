@@ -124,7 +124,8 @@ class Package(CMakePackageBase):
         if 'ENABLE_CRASHREPORTS' in os.environ:
           print('ENABLE_CRASHREPORTS')
           print(os.environ['ENABLE_CRASHREPORTS'])
-          foo = (os.environ['ENABLE_CRASHREPORTS'] == True)
+          # FIXME: PowerShell specific
+          foo = (os.environ['ENABLE_CRASHREPORTS'] == 'True')
           print("is true: %s" % foo)
         else:
           print('NO ENABLE_CRASHREPORTS')
