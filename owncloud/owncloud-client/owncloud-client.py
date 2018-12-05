@@ -174,7 +174,7 @@ def findFile(filename, dirs):
 def parseDirectDeps(filename, dirs):
   absoluteFilename = findFile(filename, dirs)
   # HACK: Use CraftCore.cache.getCommandOutput instead
-  return getCommandOutput(['peparser', '--imports', absoluteFilename]).splitlines()
+  return getCommandOutput([CraftCore.cache.findApplication("peparser"), '--imports', absoluteFilename]).splitlines()
 
 def isSystemLibrary(filename, systemLibraries):
   filenameLower = filename.lower()
