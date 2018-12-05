@@ -120,9 +120,17 @@ class Package(CMakePackageBase):
         return True
 
     def createPackage(self):
+
+        if 'ENABLE_CRASHREPORTS' in os.environ:
+          print('ENABLE_CRASHREPORTS')
+          print(os.environ['ENABLE_CRASHREPORTS'])
+
+
         sep = '\\%s' % os.sep
         regex = r"symbols%s.*" % sep
         self.whitelist.append(re.compile(regex))
+
+
 
         dirs = [
             os.path.join(self.rootdir, 'bin'),
