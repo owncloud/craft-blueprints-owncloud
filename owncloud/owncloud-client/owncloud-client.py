@@ -124,7 +124,8 @@ class Package(CMakePackageBase):
         if 'ENABLE_CRASHREPORTS' in os.environ:
           print('ENABLE_CRASHREPORTS')
           print(os.environ['ENABLE_CRASHREPORTS'])
-          print(f"is true: {os.environ['ENABLE_CRASHREPORTS'] == True}")
+          foo = (os.environ['ENABLE_CRASHREPORTS'] == True)
+          print(f"is true: {foo}")
         else
           print('NO ENABLE_CRASHREPORTS')
 
