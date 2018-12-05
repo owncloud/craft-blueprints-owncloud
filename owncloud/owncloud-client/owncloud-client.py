@@ -115,7 +115,7 @@ class Package(CMakePackageBase):
         return True
 
     def createPackage(self):
-        if not ('ENABLE_CRASHREPORTS' in os.environ) and not (os.environ['ENABLE_CRASHREPORTS'] == 'True'):
+        if not ('ENABLE_CRASHREPORTS' in os.environ) or not (os.environ['ENABLE_CRASHREPORTS'] == 'True'):
             CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
             return TypePackager.createPackage(self)
 
