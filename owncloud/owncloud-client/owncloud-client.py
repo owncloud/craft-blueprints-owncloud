@@ -173,7 +173,12 @@ def findFile(filename, dirs):
 
 
 def parseDirectDeps(filename, dirs):
+  print(f"parseDirectDeps: {filename} in {dirs}")
   absoluteFilename = findFile(filename, dirs)
+  if not absoluteFilename:
+    print(f"file not found: ${absoluteFilename} in {dirs}")
+    return []
+
   # HACK: Use CraftCore.cache.getCommandOutput instead
   return getCommandOutput([CraftCore.cache.findApplication("peparser"), '--imports', absoluteFilename]).splitlines()
 
