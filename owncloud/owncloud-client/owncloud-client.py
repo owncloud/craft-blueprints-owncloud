@@ -157,6 +157,7 @@ class Package(CMakePackageBase):
 
 # FIXME: replace with CraftCore.cache.getCommandOutput
 def getCommandOutput(cmd):
+  print(f"getCommandOutput: {cmd}")
   result = subprocess.run(cmd, stdout=subprocess.PIPE)
   return result.stdout.decode('utf-8')
 
