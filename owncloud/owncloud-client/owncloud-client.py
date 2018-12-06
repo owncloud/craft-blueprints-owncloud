@@ -31,10 +31,16 @@ class subinfo(info.infoclass):
 
         self.buildDependencies["dev-utils/peparser"] = None
 
+
+        if not 'ApplicationExecutable' in os.environ:
+            applicationExecutable = 'owncloud'
+        else:
+            applicationExecutable = os.environ['ApplicationExecutable']
+
         self.packageDependencyExeEntryPoints = [
             # Client files
-            'owncloud',
-            'owncloudcmd',
+            f'{applicationExecutable}',
+            f'{applicationExecutable}cmd',
             #'owncloud_crash_reporter',
         ]
 
@@ -176,7 +182,7 @@ def parseDirectDeps(filename, dirs):
   print(f"parseDirectDeps: {filename} in {dirs}")
   absoluteFilename = findFile(filename, dirs)
   if not absoluteFilename:
-    print(f"file not found: ${absoluteFilename} in {dirs}")
+    print(f"file not found: ${filename} in {dirs}")
     return []
 
   # HACK: Use CraftCore.cache.getCommandOutput instead
