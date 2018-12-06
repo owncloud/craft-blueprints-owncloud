@@ -37,6 +37,8 @@ class subinfo(info.infoclass):
         else:
             applicationExecutable = os.environ['ApplicationExecutable']
 
+        CraftCore.log.info(f'ApplicationExecutable: {applicationExecutable}')
+
         self.packageDependencyExeEntryPoints = [
             # Client files
             f'{applicationExecutable}',
