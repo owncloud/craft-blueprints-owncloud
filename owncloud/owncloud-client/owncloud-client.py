@@ -50,8 +50,8 @@ class subinfo(info.infoclass):
             'OCContextMenu',
             'OCOVerlays',
 
-            f'plugins/{applicationExecutable}_vfs_suffix',
-            f'plugins/{applicationExecutable}_vfs_win',
+            f'plugins/{applicationExecutable}sync_vfs_suffix',
+            f'plugins/{applicationExecutable}sync_vfs_win',
 
             # Qt plugins
             'imageformats/qgif',
@@ -217,7 +217,7 @@ def parseDeps(filename, deps, systemLibraries, dirs):
     if not sysLib:
       absoluteFilename = findFile(filename, dirs)
       if not absoluteFilename:
-        CraftCore.log.warning("File not found %ss" % (filename))
+        CraftCore.log.warning("File not found %s" % (filename))
         del deps[filename]
         return
       directDeps = parseDirectDeps(filename, dirs)
