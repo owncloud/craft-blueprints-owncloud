@@ -139,6 +139,8 @@ class Package(CMakePackageBase):
         dirs = [
             os.path.join(self.rootdir, 'bin'),
             os.path.join(self.imageDir(), 'bin'),
+            os.path.join(self.rootdir, 'lib'),
+            os.path.join(self.imageDir(), 'lib'),
             os.path.join(self.rootdir, 'plugins'),
             os.path.join(self.imageDir(), 'plugins'),
         ]
