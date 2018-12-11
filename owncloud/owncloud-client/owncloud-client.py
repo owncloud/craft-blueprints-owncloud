@@ -216,6 +216,7 @@ def parseDeps(filename, deps, systemLibraries, dirs):
       absoluteFilename = findFile(filename, dirs)
       if not absoluteFilename:
         CraftCore.log.warning("File not found %ss" % (filename))
+        del deps[filename]
         return
       directDeps = parseDirectDeps(filename, dirs)
       CraftCore.log.debug("Print dep for dep %s %s" % (filename, directDeps))
