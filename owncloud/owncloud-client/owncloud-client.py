@@ -32,10 +32,8 @@ class subinfo(info.infoclass):
         self.buildDependencies["dev-utils/peparser"] = None
 
 
-        if not 'ApplicationExecutable' in os.environ:
-            applicationExecutable = 'owncloud'
-        else:
-            applicationExecutable = os.environ['ApplicationExecutable']
+        applicationExecutable = os.environ.get('ApplicationExecutable', 'owncloud')
+        applicationShortname = os.environ.get('ApplicationShortname', 'owncloud')
 
         CraftCore.log.info(f'ApplicationExecutable: {applicationExecutable}')
 
@@ -50,8 +48,8 @@ class subinfo(info.infoclass):
             'OCContextMenu',
             'OCOVerlays',
 
-            f'plugins/{applicationExecutable}sync_vfs_suffix',
-            f'plugins/{applicationExecutable}sync_vfs_win',
+            f'{applicationShortname}/plugins/{applicationExecutable}sync_vfs_suffix',
+            f'{applicationShortname}/plugins/{applicationExecutable}sync_vfs_win',
 
             # Qt plugins
             'imageformats/qgif',
