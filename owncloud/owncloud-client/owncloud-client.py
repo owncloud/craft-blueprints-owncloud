@@ -166,6 +166,21 @@ class Package(CMakePackageBase):
 
         return TypePackager.createPackage(self)
 
+    # Forked from CMakeBuildSystem.py to add exclusion regex
+    def unittest(self):
+        """running cmake based unittests"""
+
+        self.enterBuildDir()
+
+        command = ["ctest", "--output-on-failure", "--timeout", "300"]
+
+        command += ["--exclude-regex", "WinVfsTest"]
+
+        if CraftCore.debug.verbose() == 1:
+            command += ["-V"]
+        elif CraftCore.debug.verbose() > 1:
+            command += ["-VV"]
+        return utils.system(command)
 
 # FIXME: replace with CraftCore.cache.getCommandOutput
 def getCommandOutput(cmd):
