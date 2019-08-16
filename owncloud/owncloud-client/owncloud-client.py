@@ -72,16 +72,18 @@ class Package(CMakePackageBase):
         if not CMakePackageBase.install(self):
             return False
 
-        patterns = ['**/*.dll', '**/*.exe']
-        for pattern in patterns:
-            for f in glob.glob(os.path.join(self.imageDir(), pattern), recursive=True):
-                self.dumpSymbols(f)
+        if CraftCore.compiler.isWindows:
+            patterns = ['**/*.dll', '**/*.exe']
+            for pattern in patterns:
+                for f in glob.glob(os.path.join(self.imageDir(), pattern), recursive=True):
+                    self.dumpSymbols(f)
 
         return True
 
     def createPackage(self):
-        sep = '\\%s' % os.sep
-        regex = r"symbols%s.*" % sep
-        self.whitelist.append(re.compile(regex))
+        if CraftCore.compiler.isWindows:
+            sep = '\\%s' % os.sep
+            regex = r"symbols%s.*" % sep
+            self.whitelist.append(re.compile(regex))
 
         return TypePackager.createPackage(self)
