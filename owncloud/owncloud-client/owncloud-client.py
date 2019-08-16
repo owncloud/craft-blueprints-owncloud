@@ -11,6 +11,7 @@ class subinfo(info.infoclass):
 
         self.defaultTarget = 'master'
         self.description = "ownCloud Desktop Client"
+        self.displayName = "ownCloud"
         self.webpage = "https://owncloud.org"
 
     def setDependencies(self):
@@ -82,6 +83,7 @@ class Package(CMakePackageBase):
         return True
 
     def createPackage(self):
+        self.defines["appname"] = "owncloud"
         if CraftCore.compiler.isWindows:
             sep = '\\%s' % os.sep
             regex = r"symbols%s.*" % sep
