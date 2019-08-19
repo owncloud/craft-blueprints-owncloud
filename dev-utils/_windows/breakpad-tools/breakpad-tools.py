@@ -5,6 +5,10 @@ import shutil
 from Package.MSBuildPackageBase import *
 
 class subinfo(info.infoclass):
+    def registerOptions(self):
+        # currently this package is only supported with visual studio 2017
+        self.parent.package.categoryInfo.compiler = CraftCore.compiler.Compiler.CL if CraftCore.compiler.isMSVC2017() else CraftCore.compiler.Compiler.NoCompiler
+
     """We use Jon Turney's fork which adds support for MinGW and a python script to fetch deps"""
     def setTargets(self):
         for ver in ["pecoff-dwarf-on-git-20171117-fetch-externals-on-win"]:
@@ -46,14 +50,12 @@ class Package(MSBuildPackageBase):
         cwd = depth
 
         # WORKAROUND: Visual Studio Detection is broken in containers
-        env = os.environ.copy()
         msvcString = CraftCore.compiler.abi.split("_")[0]
         msvcVersion = msvcString[4:]
-        env["GYP_MSVS_VERSION"] = msvcVersion
 
-        utils.system(['python2', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd, env=env)
-
-        MSBuildPackageBase.configure(self)
+        with utils.ScopedEnv({"GYP_MSVS_VERSION":msvcVersion}):
+            utils.system(['python2', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd)
+            MSBuildPackageBase.configure(self)
         return True
 
     # def unittest(self):
