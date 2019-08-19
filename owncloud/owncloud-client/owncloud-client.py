@@ -89,4 +89,10 @@ class Package(CMakePackageBase):
             regex = r"symbols%s.*" % sep
             self.whitelist.append(re.compile(regex))
 
+        self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
+        self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
+
+        self.ignoredPackages += ["binary/mysql"]
+        if not CraftCore.compiler.isLinux:
+            self.ignoredPackages += ["libs/dbus"]
         return TypePackager.createPackage(self)
