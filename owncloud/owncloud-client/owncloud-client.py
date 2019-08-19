@@ -5,11 +5,14 @@ import io
 import re
 
 class subinfo(info.infoclass):
-    def setTargets(self):
-        for ver in ["master"]:
-            self.svnTargets[ver] = f"[git]https://github.com/owncloud/client|{ver}|"
+    def registerOptions(self):
+        self.options.dynamic.registerOption("buildVfsWin", False)
 
-        self.defaultTarget = 'master'
+    def setTargets(self):
+        self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
+                                          tarballInstallSrc="owncloudclient-${VERSION}",
+                                          gitUrl="[git]https://github.com/owncloud/client")
+
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
         self.webpage = "https://owncloud.org"
@@ -27,6 +30,10 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qtwebkit"] = "default"
         self.runtimeDependencies["qt-libs/qtkeychain"] = "default"
 
+        if self.options.dynamic.buildVfsWin:
+            self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
+
+
 
 from Package.CMakePackageBase import *
 
@@ -35,10 +42,14 @@ class Package(CMakePackageBase):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
 
-        self.subinfo.options.configure.args = "-DUNIT_TESTING=1 "
+        self.subinfo.options.configure.args += "-DUNIT_TESTING=1 "
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
                 self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
+
+        if self.subinfo.options.dynamic.buildVfsWin:
+            win_vfs = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
+            self.subinfo.options.configure.args += f" -DvfsPlugins={win_vfs.instance.sourceDir()}"
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
