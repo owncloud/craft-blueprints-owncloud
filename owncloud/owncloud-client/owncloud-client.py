@@ -103,6 +103,11 @@ class Package(CMakePackageBase):
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
 
+        applicationExecutable = os.environ.get('ApplicationExecutable', 'owncloud')
+        self.blacklist.append(re.compile(r"bin[/|\\](?!" + applicationExecutable + r").*\.exe"))
+        print(self.blacklist[-1])
+        print(r"bin/(?!(" + applicationExecutable + r")).*\.exe")
+
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
