@@ -46,10 +46,15 @@ class Package(CMakePackageBase):
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
                 self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
-
         if self.subinfo.options.dynamic.buildVfsWin:
-            win_vfs = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
-            self.subinfo.options.configure.args += f" -DvfsPlugins={win_vfs.instance.sourceDir()}"
+            self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
+            self.subinfo.options.configure.args += f" -DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"
+
+    def fetch(self):
+        if self.subinfo.options.dynamic.buildVfsWin:
+            if not self.win_vfs_plugin.instance.fetch():
+                return False
+        return super().fetch()
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
