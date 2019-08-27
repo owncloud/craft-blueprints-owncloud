@@ -107,19 +107,22 @@ class Package(CMakePackageBase):
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
 
-        if not ('ENABLE_CRASHREPORTS' in os.environ) or not (os.environ['ENABLE_CRASHREPORTS'] == 'True'):
-            CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
-            return super().createPackage()
-        else:
+        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
             sep = '\\%s' % os.sep
             regex = r"symbols%s.*" % sep
             self.whitelist.append(re.compile(regex))
+        else:
+            CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
 
-            for f in utils.filterDirectoryContent(self.imageDir(),
-                                                         whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
-                                                         blacklist=lambda x, root: True):
+        return super().createPackage()
+
+    def preArchive(self):
+        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
+            for f in utils.filterDirectoryContent(self.archiveDir(),
+                                                  whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
+                                                  blacklist=lambda x, root: True):
                 self.dumpSymbols(f)
-            return super().createPackage()
+        return super().preArchive()
 
     # Forked from CMakeBuildSystem.py to add exclusion regex
     def unittest(self):
