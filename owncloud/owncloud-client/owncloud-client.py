@@ -63,10 +63,9 @@ class Package(CMakePackageBase):
     def dumpSymbols(self, binaryFile):
         CraftCore.log.info('Dump symbols for: %s' % binaryFile)
 
-        out = io.BytesIO()
-        utils.system(['dump_syms', binaryFile], stdout=out)
-
-        outBytes = out.getvalue()
+        with io.BytesIO() as out:
+            utils.system(['dump_syms', binaryFile], stdout=out)
+            outBytes = out.getvalue()
         firstLine = str(outBytes.splitlines()[0], 'utf-8')
         CraftCore.log.info('Module line: %s' % firstLine)
         regex = "^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)"
@@ -76,14 +75,12 @@ class Package(CMakePackageBase):
         outputPath = os.path.join(self.symbolsDir(), moduleLine.group(2),
                              moduleLine.group(1))
 
-        if (not os.path.exists(outputPath)):
-            os.makedirs(outputPath, exist_ok=True)
+        os.makedirs(outputPath, exist_ok=True)
 
         symbolFileBasename = moduleLine.group(2).replace(".pdb", "")
         symbolFile = os.path.join(outputPath, "%s.sym" % symbolFileBasename)
-        outputFile = open(symbolFile, 'wb')
-        outputFile.write(outBytes)
-
+        with open(symbolFile, 'wb') as outputFile:
+            outputFile.write(outBytes)
         CraftCore.log.info('Writing symbols to: %s' % symbolFile)
 
     def install(self):
