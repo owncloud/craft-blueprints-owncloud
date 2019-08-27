@@ -52,11 +52,25 @@ class Package(CMakePackageBase):
             self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
             self.subinfo.options.configure.args += f" -DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"
 
+    @property
+    def applicationExecutable(self):
+        return os.environ.get('ApplicationExecutable', 'owncloud')
+
     def fetch(self):
         if self.subinfo.options.dynamic.buildVfsWin:
             if not self.win_vfs_plugin.instance.fetch():
                 return False
         return super().fetch()
+
+    def install(self):
+        if CraftCore.compiler.isWindows:
+            # ensure we can find the sync-exclude.lst
+            configDir = Path(self.installDir()) / "config" / self.applicationExecutable
+            if configDir.exists():
+                if not utils.mergeTree(configDir, Path(self.installDir()) / "bin"):
+                    return False
+        return True
+
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
@@ -95,7 +109,6 @@ class Package(CMakePackageBase):
         with open(symbolFile, 'wb') as outputFile:
             outputFile.write(outBytes)
         CraftCore.log.info('Writing symbols to: %s' % symbolFile)
-
         return True
 
     def createPackage(self):
@@ -103,10 +116,8 @@ class Package(CMakePackageBase):
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
 
-        applicationExecutable = os.environ.get('ApplicationExecutable', 'owncloud')
-        self.blacklist.append(re.compile(r"bin[/|\\](?!" + applicationExecutable + r").*\.exe"))
-        print(self.blacklist[-1])
-        print(r"bin/(?!(" + applicationExecutable + r")).*\.exe")
+
+        self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*\.exe"))
 
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
