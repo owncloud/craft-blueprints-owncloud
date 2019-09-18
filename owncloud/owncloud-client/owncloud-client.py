@@ -30,10 +30,12 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qttranslations"] = None
         self.runtimeDependencies["libs/qt5/qtsvg"] = None
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
-        self.runtimeDependencies["libs/qt5/qtwebkit"] = None
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
+
+        if self.buildTarget != "master" and self.buildTarget < CraftVersion("2.6"):
+            self.runtimeDependencies["libs/qt5/qtwebkit"] = None
 
 
 
