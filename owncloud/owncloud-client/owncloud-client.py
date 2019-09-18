@@ -3,6 +3,8 @@ import os
 
 import io
 import re
+import sys
+import subprocess
 
 class subinfo(info.infoclass):
     def registerOptions(self):
@@ -18,18 +20,18 @@ class subinfo(info.infoclass):
         self.webpage = "https://owncloud.org"
 
     def setDependencies(self):
-        self.buildDependencies["craft/craft-blueprints-owncloud"] = "default"
-        self.buildDependencies["dev-utils/cmake"] = "default"
-        self.buildDependencies["kde/frameworks/extra-cmake-modules"] = "default"
-        self.buildDependencies["dev-utils/breakpad-tools"] = "default"
-        self.runtimeDependencies["libs/qt5/qtbase"] = "default"
-        self.runtimeDependencies["libs/qt5/qtmacextras"] = "default"
-        self.runtimeDependencies["libs/qt5/qttranslations"] = "default"
-        self.runtimeDependencies["libs/qt5/qtsvg"] = "default"
-        self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = "default"
-        self.runtimeDependencies["libs/qt5/qtwebkit"] = "default"
-        self.runtimeDependencies["qt-libs/qtkeychain"] = "default"
-
+        self.buildDependencies["craft/craft-blueprints-owncloud"] = None
+        self.buildDependencies["dev-utils/cmake"] = None
+        self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
+        self.buildDependencies["dev-utils/breakpad-tools"] = None
+        self.runtimeDependencies["libs/zlib"] = None
+        self.runtimeDependencies["libs/qt5/qtbase"] = None
+        self.runtimeDependencies["libs/qt5/qtmacextras"] = None
+        self.runtimeDependencies["libs/qt5/qttranslations"] = None
+        self.runtimeDependencies["libs/qt5/qtsvg"] = None
+        self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
+        self.runtimeDependencies["libs/qt5/qtwebkit"] = None
+        self.runtimeDependencies["qt-libs/qtkeychain"] = None
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
 
@@ -41,8 +43,8 @@ class Package(CMakePackageBase):
     def __init__(self):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
-
-        self.subinfo.options.configure.args += "-DUNIT_TESTING=1 "
+        # Pending PR to move to standard BUILD_TESTING: https://github.com/owncloud/client/pull/6917#issuecomment-444845521
+        self.subinfo.options.configure.args = "-DUNIT_TESTING={testing} ".format(testing="ON" if self.buildTests else "OFF")
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
                 self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
@@ -60,14 +62,25 @@ class Package(CMakePackageBase):
         return os.path.join(self.imageDir(), 'symbols')
 
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
-    def dumpSymbols(self, binaryFile):
+    def dumpSymbols(self, binaryFile) -> bool:
+        if re.match(r"icudt\d\d.dll", os.path.basename(binaryFile)):
+            CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
+            return False
+
         CraftCore.log.info('Dump symbols for: %s' % binaryFile)
 
+        realpath = os.path.realpath(binaryFile)
         with io.BytesIO() as out:
-            utils.system(['dump_syms', binaryFile], stdout=out)
+            utils.system(['dump_syms', realpath], stdout=out)
             outBytes = out.getvalue()
+
         firstLine = str(outBytes.splitlines()[0], 'utf-8')
         CraftCore.log.info('Module line: %s' % firstLine)
+
+        if firstLine.startswith("loadDataForPdb and loadDataFromExe failed for"):
+            CraftCore.log.warning(f"Module does not contain debug symbols: {binaryFile}")
+            return False
+
         regex = "^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)"
         CraftCore.log.debug('regex: %s' % regex)
         moduleLine = re.match(regex, firstLine)
@@ -83,29 +96,53 @@ class Package(CMakePackageBase):
             outputFile.write(outBytes)
         CraftCore.log.info('Writing symbols to: %s' % symbolFile)
 
-    def install(self):
-        if not CMakePackageBase.install(self):
-            return False
-
-        if CraftCore.compiler.isWindows:
-            patterns = ['**/*.dll', '**/*.exe']
-            for pattern in patterns:
-                for f in glob.glob(os.path.join(self.imageDir(), pattern), recursive=True):
-                    self.dumpSymbols(f)
-
         return True
 
     def createPackage(self):
         self.defines["appname"] = "owncloud"
-        if CraftCore.compiler.isWindows:
-            sep = '\\%s' % os.sep
-            regex = r"symbols%s.*" % sep
-            self.whitelist.append(re.compile(regex))
-
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
+
+        applicationExecutable = os.environ.get('ApplicationExecutable', 'owncloud')
+        self.blacklist.append(re.compile(r"bin[/|\\](?!" + applicationExecutable + r").*\.exe"))
+        print(self.blacklist[-1])
+        print(r"bin/(?!(" + applicationExecutable + r")).*\.exe")
 
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
-        return TypePackager.createPackage(self)
+
+        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
+            sep = '\\%s' % os.sep
+            regex = r"symbols%s.*" % sep
+            self.whitelist.append(re.compile(regex))
+        else:
+            CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
+
+        return super().createPackage()
+
+    def preArchive(self):
+        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
+            for f in utils.filterDirectoryContent(self.archiveDir(),
+                                                  whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
+                                                  blacklist=lambda x, root: True):
+                self.dumpSymbols(f)
+        return super().preArchive()
+
+    # Forked from CMakeBuildSystem.py to add exclusion regex
+    def unittest(self):
+        """running cmake based unittests"""
+        # TODO: add options.unittest.args
+
+        self.enterBuildDir()
+
+        command = ["ctest", "--output-on-failure", "--timeout", "300"]
+
+        command += ["--exclude-regex", "WinVfsTest"]
+
+        if CraftCore.debug.verbose() == 1:
+            command += ["-V"]
+        elif CraftCore.debug.verbose() > 1:
+            command += ["-VV"]
+        return utils.system(command)
+
