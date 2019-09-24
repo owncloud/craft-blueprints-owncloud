@@ -63,6 +63,8 @@ class Package(CMakePackageBase):
         return super().fetch()
 
     def install(self):
+        if not super().install():
+            return False
         if CraftCore.compiler.isWindows:
             # ensure we can find the sync-exclude.lst
             configDir = Path(self.installDir()) / "config" / self.applicationExecutable
@@ -70,7 +72,6 @@ class Package(CMakePackageBase):
                 if not utils.mergeTree(configDir, Path(self.installDir()) / "bin"):
                     return False
         return True
-
 
     def symbolsDir(self):
         return os.path.join(self.imageDir(), 'symbols')
