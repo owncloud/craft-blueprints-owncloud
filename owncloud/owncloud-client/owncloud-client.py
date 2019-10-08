@@ -121,7 +121,7 @@ class Package(CMakePackageBase):
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
 
 
-        self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*\.exe"))
+        self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
 
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
