@@ -116,6 +116,7 @@ class Package(CMakePackageBase):
 
     def createPackage(self):
         self.defines["appname"] = self.applicationExecutable
+        self.defines["company"] = "ownCloud GmbH"
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
 
