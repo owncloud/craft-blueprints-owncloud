@@ -32,7 +32,7 @@ class Package(MSBuildPackageBase):
         if not super().fetch():
             return False
 
-        utils.system(["python3", "fetch-externals"], cwd=self.sourceDir())
+        utils.system(["python2", "fetch-externals"], cwd=self.sourceDir())
 
         # Remove binaries that are shipped in source
         binariesPath = os.path.join(self.sourceDir(), 'src', 'tools', 'windows', 'binaries')
