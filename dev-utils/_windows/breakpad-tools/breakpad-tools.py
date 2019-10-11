@@ -11,15 +11,16 @@ class subinfo(info.infoclass):
 
     """We use Jon Turney's fork which adds support for MinGW and a python script to fetch deps"""
     def setTargets(self):
-        for ver in ["pecoff-dwarf-on-git-20171117-fetch-externals-on-win"]:
+        for ver in ["pecoff-dwarf-on-git-20171117-fetch-externals-on-win", "patch-1"]:
             self.svnTargets[ver] = f"[git]https://github.com/dschmidt/google-breakpad|{ver}|"
 
-        self.defaultTarget = 'pecoff-dwarf-on-git-20171117-fetch-externals-on-win'
+        self.defaultTarget = 'patch-1'
         self.description = "The tools part of the breakpad crash-reporting system."
         self.webpage = "https://github.com/dschmidt/google-breakpad"
 
     def setDependencies(self):
-        self.buildDependencies["dev-utils/python2"] = "default"
+        self.buildDependencies["dev-utils/python3"] = "default"
+
 
 class Package(MSBuildPackageBase):
     def __init__(self):
