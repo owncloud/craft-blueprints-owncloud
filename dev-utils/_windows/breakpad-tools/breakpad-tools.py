@@ -55,7 +55,7 @@ class Package(MSBuildPackageBase):
         msvcVersion = msvcString[4:]
 
         with utils.ScopedEnv({"GYP_MSVS_VERSION":msvcVersion}):
-            utils.system(['python2', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd)
+            utils.system(['python3', gypMain, '--no-circular-check', gypFile, '-f', 'msvs', '--generator-output=%s' % self.buildDir(), '--depth=%s' % depth], cwd=cwd)
             MSBuildPackageBase.configure(self)
         return True
 
