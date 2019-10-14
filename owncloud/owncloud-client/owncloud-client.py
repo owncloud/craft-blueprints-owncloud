@@ -131,15 +131,18 @@ class Package(CMakePackageBase):
             sep = '\\%s' % os.sep
             regex = r"symbols%s.*" % sep
             self.whitelist.append(re.compile(regex))
-
-            for f in utils.filterDirectoryContent(self.imageDir(),
-                                                         whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
-                                                         blacklist=lambda x, root: True):
-                self.dumpSymbols(f)
         else:
             CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
 
         return super().createPackage()
+
+    def preArchive(self):
+        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
+            for f in utils.filterDirectoryContent(self.archiveDir(),
+                                                  whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
+                                                  blacklist=lambda x, root: True):
+                self.dumpSymbols(f)
+        return super().preArchive()
 
     # Forked from CMakeBuildSystem.py to add exclusion regex
     def unittest(self):
