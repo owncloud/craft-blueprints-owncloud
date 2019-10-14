@@ -138,7 +138,7 @@ class Package(CMakePackageBase):
             for f in utils.filterDirectoryContent(self.archiveDir(),
                                                   whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
                                                   blacklist=lambda x, root: True):
-                self.dumpSymbols(f, self.archiveDir())
+                self.dumpSymbols(f, self.archiveDebugDir())
         return super().preArchive()
 
     # Forked from CMakeBuildSystem.py to add exclusion regex
