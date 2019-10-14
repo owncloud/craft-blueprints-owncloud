@@ -75,11 +75,8 @@ class Package(CMakePackageBase):
                     return False
         return True
 
-    def symbolsDir(self):
-        return os.path.join(self.imageDir(), 'symbols')
-
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
-    def dumpSymbols(self, binaryFile) -> bool:
+    def dumpSymbols(self, binaryFile, dest) -> bool:
         if re.match(r"icudt\d\d.dll", os.path.basename(binaryFile)):
             CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
             return False
@@ -102,7 +99,7 @@ class Package(CMakePackageBase):
         CraftCore.log.debug('regex: %s' % regex)
         moduleLine = re.match(regex, firstLine)
         CraftCore.log.debug('regex: %s' % moduleLine)
-        outputPath = os.path.join(self.symbolsDir(), moduleLine.group(2),
+        outputPath = os.path.join(Path(dest) / "symbols", moduleLine.group(2),
                              moduleLine.group(1))
 
         os.makedirs(outputPath, exist_ok=True)
@@ -141,7 +138,7 @@ class Package(CMakePackageBase):
             for f in utils.filterDirectoryContent(self.archiveDir(),
                                                   whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
                                                   blacklist=lambda x, root: True):
-                self.dumpSymbols(f)
+                self.dumpSymbols(f, self.archiveDir())
         return super().preArchive()
 
     # Forked from CMakeBuildSystem.py to add exclusion regex
