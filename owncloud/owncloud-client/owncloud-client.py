@@ -116,6 +116,7 @@ class Package(CMakePackageBase):
         self.defines["company"] = "ownCloud GmbH"
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
+        self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
 
 
         self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
