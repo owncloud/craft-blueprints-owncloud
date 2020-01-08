@@ -37,8 +37,10 @@ class subinfo(info.infoclass):
         if self.buildTarget != "master" and self.buildTarget < CraftVersion("2.6"):
             self.runtimeDependencies["libs/qt5/qtwebkit"] = None
 
-        if self.options.dynamic.buildTests:
-            self.buildDependencies["dev-utils/cmocka"] = None
+        if not CraftCore.compiler.isWindows:
+            # the unit tests first need to get ported to Windows
+            if self.options.dynamic.buildTests:
+                self.buildDependencies["dev-utils/cmocka"] = None
 
 
 
