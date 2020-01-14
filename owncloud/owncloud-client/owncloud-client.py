@@ -154,7 +154,7 @@ class Package(CMakePackageBase):
 
         self.enterBuildDir()
 
-        command = ["ctest", "--output-on-failure", "--timeout", "300"]
+        command = ["ctest", "--output-on-failure", "--timeout", "300", "-j", str(CraftCore.settings.get("Compile", "Jobs", multiprocessing.cpu_count()))]
 
         command += ["--exclude-regex", "WinVfsTest"]
 
