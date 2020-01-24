@@ -15,6 +15,9 @@ class subinfo(info.infoclass):
                                           tarballInstallSrc="owncloudclient-${VERSION}",
                                           gitUrl="[git]https://github.com/owncloud/client")
 
+        # we don't have that branche yet
+        self.svnTargets["2.7"] = self.svnTargets["master"]
+
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
         self.webpage = "https://owncloud.org"
@@ -65,9 +68,15 @@ class Package(CMakePackageBase):
 
     def fetch(self):
         if self.subinfo.options.dynamic.buildVfsWin:
-            if not self.win_vfs_plugin.instance.fetch():
+            if not self.win_vfs_plugin.instance.fetch(noop=False):
                 return False
         return super().fetch()
+
+    def unpack(self):
+        if self.subinfo.options.dynamic.buildVfsWin:
+            if not self.win_vfs_plugin.instance.unpack(noop=False):
+                return False
+        return super().unpack()
 
     def install(self):
         if not super().install():
