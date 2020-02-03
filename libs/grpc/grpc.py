@@ -4,7 +4,12 @@ import info
 class subinfo(info.infoclass):
     def setTargets(self):
         self.svnTargets['master'] = 'https://github.com/grpc/grpc.git'
-        self.defaultTarget = "master"
+        for ver in ["1.26.0"]:
+            self.targets[ver] = f"https://github.com/grpc/grpc/archive/v{ver}.tar.gz"
+            self.archiveNames[ver] = f"grpc-{ver}.tar.gz"
+            self.targetInstSrc[ver] = f"grpc-{ver}"
+        self.targetDigests["1.26.0"] = (['2fcb7f1ab160d6fd3aaade64520be3e5446fc4c6fa7ba6581afdc4e26094bd81'], CraftHash.HashAlgorithm.SHA256)
+        self.defaultTarget = "1.26.0"
 
     def setDependencies(self):
         self.buildDependencies["virtual/base"] = None
