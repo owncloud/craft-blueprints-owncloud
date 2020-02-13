@@ -83,7 +83,7 @@ class Package(CMakePackageBase):
             return False
         if CraftCore.compiler.isWindows:
             # ensure we can find the sync-exclude.lst
-            configDir = Path(self.installDir()) / "config" / self.applicationExecutable
+            configDir = Path(self.installDir()) / "config" / os.environ.get('ApplicationShortname', self.applicationExecutable)
             if configDir.exists():
                 if not utils.mergeTree(configDir, Path(self.installDir()) / "bin"):
                     return False
