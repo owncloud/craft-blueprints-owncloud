@@ -5,7 +5,10 @@ import shutil
 from Package.CMakePackageBase import *
 
 class subinfo(info.infoclass):
-    """We use Jon Turney's fork which adds support for MinGW and a python script to fetch deps"""
+    def registerOptions(self):
+        if CraftCore.compiler.isMinGW():
+            self.parent.package.categoryInfo.compiler = CraftCore.compiler.Compiler.NoCompiler
+
     def setTargets(self):
         for ver in ["pecoff-dwarf-on-git-20171117", "pecoff-dwarf-on-git-20171117-fetch-externals-on-win"]:
             self.svnTargets[ver] = f"[git]https://github.com/dschmidt/google-breakpad|{ver}|"
