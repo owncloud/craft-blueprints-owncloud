@@ -102,6 +102,7 @@ class Package(CMakePackageBase):
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
     def dumpSymbols(self, binaryFiles : [], dest : str) -> bool:
         dest = Path(dest) / "symbols"
+        utils.cleanDirectory(dest)
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
         icuRe = re.compile(r"icudt\d\d.dll")
 
@@ -116,17 +117,17 @@ class Package(CMakePackageBase):
             command = ['dump_syms']
             if CraftCore.compiler.isMacOS:
                 relPath = binaryFile.relative_to(self.archiveDir())
-                print(relPath)
                 dSym = Path(CraftCore.standardDirs.craftRoot()) / relPath
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), dSym.parents))
                 if bundleDir:
-                    dSym = bundleDir
+                    dSym = bundleDir[-1]
                 dSym = Path(f"{dSym}.dSYM")
+                print(dSym)
                 if dSym.exists():
                     command += ["-g", dSym]
             command.append(binaryFile)
             with io.BytesIO() as out:
-                utils.system(command, stdout=out)
+                utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
                 outBytes = out.getvalue()
 
             firstLine = str(outBytes.splitlines(1)[0], 'utf-8')
