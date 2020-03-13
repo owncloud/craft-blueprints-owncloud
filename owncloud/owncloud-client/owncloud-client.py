@@ -122,7 +122,6 @@ class Package(CMakePackageBase):
                 if bundleDir:
                     dSym = bundleDir[-1]
                 dSym = Path(f"{dSym}.dSYM")
-                print(dSym)
                 if dSym.exists():
                     command += ["-g", dSym]
             command.append(binaryFile)
