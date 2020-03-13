@@ -1,6 +1,7 @@
 import info
-import os
 
+import configparser
+import os
 import io
 import re
 import sys
@@ -9,6 +10,7 @@ import subprocess
 class subinfo(info.infoclass):
     def registerOptions(self):
         self.options.dynamic.registerOption("buildVfsWin", False)
+        self.options.dynamic.registerOption("enableCrashReporter", False)
 
     def setTargets(self):
         self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
@@ -61,6 +63,8 @@ class Package(CMakePackageBase):
         if self.subinfo.options.dynamic.buildVfsWin:
             self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
             self.subinfo.options.configure.args += f" -DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"
+        if "ENABLE_CRASHREPORTS" in os.environ:
+            self.subinfo.options.dynamic.enableCrashReporter = configparser.RawConfigParser.BOOLEAN_STATES.get(os.environ.get("ENABLE_CRASHREPORTS"))
 
     @property
     def applicationExecutable(self):
@@ -92,39 +96,41 @@ class Package(CMakePackageBase):
         return True
 
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
-    def dumpSymbols(self, binaryFile, dest) -> bool:
-        if re.match(r"icudt\d\d.dll", os.path.basename(binaryFile)):
-            CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
-            return False
+    def dumpSymbols(self, binaryFiles : [], dest : str) -> bool:
+        dest = Path(dest) / "symbols"
+        moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
+        icuRe = re.compile(r"icudt\d\d.dll")
 
-        CraftCore.log.info('Dump symbols for: %s' % binaryFile)
+        for binaryFile in binaryFiles:
+            if CraftCore.compiler.isWindows and icuRe.match(os.path.basename(binaryFile)):
+                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
+                return False
 
-        realpath = os.path.realpath(binaryFile)
-        with io.BytesIO() as out:
-            utils.system(['dump_syms', realpath], stdout=out)
-            outBytes = out.getvalue()
+            CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
-        firstLine = str(outBytes.splitlines()[0], 'utf-8')
-        CraftCore.log.info('Module line: %s' % firstLine)
+            realpath = os.path.realpath(binaryFile)
+            with io.BytesIO() as out:
+                utils.system(['dump_syms', realpath], stdout=out)
+                outBytes = out.getvalue()
 
-        if firstLine.startswith("loadDataForPdb and loadDataFromExe failed for"):
-            CraftCore.log.warning(f"Module does not contain debug symbols: {binaryFile}")
-            return False
+            firstLine = str(outBytes.splitlines(1)[0], 'utf-8')
+            CraftCore.log.info(f"Module line: {firstLine}")
 
-        regex = "^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)"
-        CraftCore.log.debug('regex: %s' % regex)
-        moduleLine = re.match(regex, firstLine)
-        CraftCore.log.debug('regex: %s' % moduleLine)
-        outputPath = os.path.join(Path(dest) / "symbols", moduleLine.group(2),
-                             moduleLine.group(1))
+            if CraftCore.compiler.isWindows:
+                if firstLine.startswith("loadDataForPdb and loadDataFromExe failed for"):
+                    CraftCore.log.warning(f"Module does not contain debug symbols: {binaryFile}")
+                    return False
 
-        os.makedirs(outputPath, exist_ok=True)
+            CraftCore.log.debug('regex: %s' % moduleRe)
+            moduleLine = moduleRe.match(firstLine)
+            CraftCore.log.debug('regex: %s' % moduleLine)
+            outputPath = dest / moduleLine.group(2) / moduleLine.group(1)
 
-        symbolFileBasename = moduleLine.group(2).replace(".pdb", "")
-        symbolFile = os.path.join(outputPath, "%s.sym" % symbolFileBasename)
-        with open(symbolFile, 'wb') as outputFile:
-            outputFile.write(outBytes)
-        CraftCore.log.info('Writing symbols to: %s' % symbolFile)
+            utils.createDir(outputPath)
+            symbolFile = (outputPath / moduleLine.group(2)).with_suffix(".sym")
+            with open(symbolFile, 'wb') as outputFile:
+                outputFile.write(outBytes)
+            CraftCore.log.info('Writing symbols to: %s' % symbolFile)
         return True
 
     def createPackage(self):
@@ -141,21 +147,19 @@ class Package(CMakePackageBase):
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
 
-        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
+        if self.subinfo.options.dynamic.enableCrashReporter:
             sep = '\\%s' % os.sep
             regex = r"symbols%s.*" % sep
             self.whitelist.append(re.compile(regex))
-        else:
-            CraftCore.log.info('ENABLE_CRASHREPORTS is not active. Not dumping symbols.')
-
         return super().createPackage()
 
     def preArchive(self):
-        if os.environ.get('ENABLE_CRASHREPORTS', "False") == 'True':
-            for f in utils.filterDirectoryContent(self.archiveDir(),
+        if self.subinfo.options.dynamic.enableCrashReporter:
+            binaries = utils.filterDirectoryContent(self.archiveDir(),
                                                   whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
-                                                  blacklist=lambda x, root: True):
-                self.dumpSymbols(f, self.archiveDebugDir())
+                                                  blacklist=lambda x, root: True)
+            if not self.dumpSymbols(binaries, self.archiveDebugDir()):
+                return False
         return super().preArchive()
 
     # Forked from CMakeBuildSystem.py to add exclusion regex
