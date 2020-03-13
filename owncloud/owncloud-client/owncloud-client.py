@@ -106,15 +106,27 @@ class Package(CMakePackageBase):
         icuRe = re.compile(r"icudt\d\d.dll")
 
         for binaryFile in binaryFiles:
-            if CraftCore.compiler.isWindows and icuRe.match(os.path.basename(binaryFile)):
+            binaryFile = Path(binaryFile)
+            if CraftCore.compiler.isWindows and icuRe.match(binaryFile.name):
                 CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
                 return False
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
-            realpath = os.path.realpath(binaryFile)
+            command = ['dump_syms']
+            if CraftCore.compiler.isMacOS:
+                relPath = binaryFile.relative_to(self.archiveDir())
+                print(relPath)
+                dSym = Path(CraftCore.standardDirs.craftRoot()) / relPath
+                bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), dSym.parents))
+                if bundleDir:
+                    dSym = bundleDir
+                dSym = Path(f"{dSym}.dSYM")
+                if dSym.exists():
+                    command += ["-g", dSym]
+            command.append(binaryFile)
             with io.BytesIO() as out:
-                utils.system(['dump_syms', realpath], stdout=out)
+                utils.system(command, stdout=out)
                 outBytes = out.getvalue()
 
             firstLine = str(outBytes.splitlines(1)[0], 'utf-8')
@@ -127,11 +139,18 @@ class Package(CMakePackageBase):
 
             CraftCore.log.debug('regex: %s' % moduleRe)
             moduleLine = moduleRe.match(firstLine)
+            if not moduleLine:
+                CraftCore.log.warning("Failed to parse dump_symbols output")
+                return False
             CraftCore.log.debug('regex: %s' % moduleLine)
             outputPath = dest / moduleLine.group(2) / moduleLine.group(1)
 
             utils.createDir(outputPath)
-            symbolFile = (outputPath / moduleLine.group(2)).with_suffix(".sym")
+            symbolFile = (outputPath / moduleLine.group(2))
+            if CraftCore.compiler.isWindows:
+                symbolFile = symbolFile.with_suffix(".sym")
+            else:
+                symbolFile = f"{symbolFile}.sym"
             with open(symbolFile, 'wb') as outputFile:
                 outputFile.write(outBytes)
             CraftCore.log.info('Writing symbols to: %s' % symbolFile)
