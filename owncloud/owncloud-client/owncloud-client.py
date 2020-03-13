@@ -105,11 +105,16 @@ class Package(CMakePackageBase):
         utils.cleanDirectory(dest)
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
         icuRe = re.compile(r"icudt\d\d.dll")
+        finderSyncExtRe = re.compile(r"FinderSyncExt")
 
         for binaryFile in binaryFiles:
             binaryFile = Path(binaryFile)
             if CraftCore.compiler.isWindows and icuRe.match(binaryFile.name):
                 CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
+                return False
+
+            if CraftCore.compiler.isMacOS and finderSyncExtRe.match(binaryFile.name):
+                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension')
                 return False
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
