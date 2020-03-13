@@ -111,11 +111,11 @@ class Package(CMakePackageBase):
             binaryFile = Path(binaryFile)
             if CraftCore.compiler.isWindows and icuRe.match(binaryFile.name):
                 CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
-                return False
+                continue
 
             if CraftCore.compiler.isMacOS and finderSyncExtRe.match(binaryFile.name):
                 CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension')
-                return False
+                continue
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
