@@ -110,7 +110,11 @@ class Package(CMakePackageBase):
         cmdRe = re.compile(r".*cmd")
         crashReporterRe = re.compile(r".*_crash_reporter")
 
-        hack = glob.glob(str(Path(CraftCore.standardDirs.craftRoot()) / "Applications/KDE/*.app.dSYM/Contents/Resources/DWARF/FinderSyncExt"))
+        appDsymDir = Path(CraftCore.standardDirs.craftRoot()) / "Applications/KDE/*.app.dSYM/Contents/Resources/DWARF"
+        hack = []
+        for exp in ["FinderSyncExt", "*cmd", "*_crash_reporter"]:
+            hack += glob.glob(str(appDsymDir / exp))
+
         for f in hack:
             CraftCore.log.warning(f'dump_symbols: {f} is removed')
             os.remove(f)
