@@ -6,6 +6,7 @@ import io
 import re
 import sys
 import subprocess
+import glob
 
 class subinfo(info.infoclass):
     def registerOptions(self):
@@ -106,6 +107,14 @@ class Package(CMakePackageBase):
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
         icuRe = re.compile(r"icudt\d\d.dll")
         finderSyncExtRe = re.compile(r"FinderSyncExt")
+        cmdRe = re.compile(r".*cmd")
+        crashReporterRe = re.compile(r".*_crash_reporter")
+
+        hack = glob.glob(str(Path(CraftCore.standardDirs.craftRoot()) / "Applications/KDE/*.app.dSYM/Contents/Resources/DWARF/FinderSyncExt"))
+        for f in hack:
+            CraftCore.log.warning(f'dump_symbols: {f} is removed')
+            os.remove(f)
+        print(hack)
 
         for binaryFile in binaryFiles:
             binaryFile = Path(binaryFile)
@@ -113,8 +122,8 @@ class Package(CMakePackageBase):
                 CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
                 continue
 
-            if CraftCore.compiler.isMacOS and finderSyncExtRe.match(binaryFile.name):
-                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension')
+            if CraftCore.compiler.isMacOS and (finderSyncExtRe.match(binaryFile.name) or cmdRe.match(binaryFile.name) or crashReporterRe.match(binaryFile.name)):
+                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension, the cmdline client or the crash reporter itself')
                 continue
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
@@ -163,6 +172,7 @@ class Package(CMakePackageBase):
 
     def createPackage(self):
         self.defines["appname"] = self.applicationExecutable
+        self.defines["apppath"] = "Applications/KDE/" + self.applicationExecutable + ".app"
         self.defines["company"] = "ownCloud GmbH"
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"bin/{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
