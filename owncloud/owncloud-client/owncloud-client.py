@@ -209,21 +209,3 @@ class Package(CMakePackageBase):
             if not self.dumpSymbols(binaries, self.archiveDebugDir()):
                 return False
         return super().preArchive()
-
-    # Forked from CMakeBuildSystem.py to add exclusion regex
-    def unittest(self):
-        """running cmake based unittests"""
-        # TODO: add options.unittest.args
-
-        self.enterBuildDir()
-
-        command = ["ctest", "--output-on-failure", "--timeout", "300", "-j", str(CraftCore.settings.get("Compile", "Jobs", multiprocessing.cpu_count()))]
-
-        command += ["--exclude-regex", "WinVfsTest"]
-
-        if CraftCore.debug.verbose() == 1:
-            command += ["-V"]
-        elif CraftCore.debug.verbose() > 1:
-            command += ["-VV"]
-        return utils.system(command)
-
