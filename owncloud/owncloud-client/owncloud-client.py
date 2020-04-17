@@ -153,7 +153,7 @@ class Package(CMakePackageBase):
                 return False
             outBytes = result.stdout
 
-            firstLine = str(outBytes.splitlines(1)[0], 'utf-8')
+            firstLine = str(outBytes.splitlines(1)[0], 'utf-8').strip()
             CraftCore.log.info(f"Module line: {firstLine}")
 
             if CraftCore.compiler.isWindows:
