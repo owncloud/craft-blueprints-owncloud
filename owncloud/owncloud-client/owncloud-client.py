@@ -147,6 +147,10 @@ class Package(CMakePackageBase):
                 utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
                 outBytes = out.getvalue()
 
+            if not outBytes:
+                CraftCore.log.warning(f"Found no valid output for {binaryFile}: {outBytes}")
+                continue
+
             firstLine = str(outBytes.splitlines(1)[0], 'utf-8').strip()
             CraftCore.log.info(f"Module line: {firstLine}")
 
