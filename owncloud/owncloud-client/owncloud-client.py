@@ -142,16 +142,10 @@ class Package(CMakePackageBase):
                 dSym = Path(f"{dSym}.dSYM")
                 if dSym.exists():
                     command += ["-g", dSym]
-
             command.append(binaryFile)
-            print(command)
-            result = subprocess.run(command, capture_output=True)
-            if result.returncode != 0:
-                CraftCore.log.warning(f'dump_symbols: {binaryFile} could not be processed')
-                print(result.stderr)
-                print(subprocess.run(["find", dSym]))
-                return False
-            outBytes = result.stdout
+            with io.BytesIO() as out:
+                utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
+                outBytes = out.getvalue()
 
             firstLine = str(outBytes.splitlines(1)[0], 'utf-8').strip()
             CraftCore.log.info(f"Module line: {firstLine}")
