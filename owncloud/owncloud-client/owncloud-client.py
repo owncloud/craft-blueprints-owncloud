@@ -66,7 +66,7 @@ class Package(CMakePackageBase):
             self.subinfo.options.configure.args += f" -DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"
 
         if "ENABLE_CRASHREPORTS" in os.environ:
-            self.subinfo.options.dynamic.enableCrashReporter = configparser.RawConfigParser.BOOLEAN_STATES.get(os.environ.get("ENABLE_CRASHREPORTS"))
+            self.subinfo.options.dynamic.enableCrashReporter = configparser.RawConfigParser.BOOLEAN_STATES.get(os.environ.get("ENABLE_CRASHREPORTS").lower())
         if self.subinfo.options.dynamic.enableCrashReporter:
             self.subinfo.options.configure.args += " -DWITH_CRASHREPORTER=ON"
 
