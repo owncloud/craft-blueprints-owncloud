@@ -147,7 +147,7 @@ class Package(CMakePackageBase):
                 utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
                 outBytes = out.getvalue()
 
-            firstLine = str(outBytes.splitlines(1)[0], 'utf-8')
+            firstLine = str(outBytes.splitlines(1)[0], 'utf-8').strip()
             CraftCore.log.info(f"Module line: {firstLine}")
 
             if CraftCore.compiler.isWindows:
