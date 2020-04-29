@@ -1,0 +1,14 @@
+translations/assistant.*.qm
+translations/designer.*.qm
+translations/linguist.*.qm
+translations/qt_help.*.qm
+translations/qtconnectivity_bg.*.qm
+translations/qtlocation.*.qm
+translations/qtmultimedia.*.qm
+translations/qtscript.*.qm
+translations/qtserialport.*.qm
+
+
+
+translations/qtdeclarative.*.qm
+translations/qtquickcontrols.*.qm
