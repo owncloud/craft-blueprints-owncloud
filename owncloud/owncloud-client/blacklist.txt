@@ -12,3 +12,6 @@ translations/qtserialport.*.qm
 
 translations/qtdeclarative.*.qm
 translations/qtquickcontrols.*.qm
+
+# not needed and the dependency mysql might not be available for deployment
+plugins/sqldrivers/libqsqlmysql.*
