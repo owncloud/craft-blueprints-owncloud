@@ -31,6 +31,7 @@ class subinfo(info.infoclass):
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
         self.buildDependencies["dev-utils/breakpad-tools"] = None
         self.runtimeDependencies["libs/zlib"] = None
+        self.runtimeDependencies["libs/sqlite"] = None
         self.runtimeDependencies["libs/qt5/qtbase"] = None
         self.runtimeDependencies["libs/qt5/qtmacextras"] = None
         self.runtimeDependencies["libs/qt5/qttranslations"] = None
