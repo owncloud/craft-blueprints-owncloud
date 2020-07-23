@@ -19,7 +19,7 @@ class subinfo(info.infoclass):
                                           gitUrl="[git]https://github.com/owncloud/client")
 
         # we don't have that branche yet
-        self.svnTargets["2.7"] = self.svnTargets["master"]
+        self.svnTargets["2.8"] = self.svnTargets["master"]
 
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
