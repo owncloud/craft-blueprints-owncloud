@@ -202,7 +202,7 @@ class Package(CMakePackageBase):
         return super().createPackage()
 
     def preArchive(self):
-        if CraftCore.compiler.isWindows and not isinstance(self, PortablePackager):
+        if isinstance(self, NullsoftInstallerPackager):
             archiveDir = Path(self.archiveDir())
             # TODO: install translations to the correct location in the first place
             for src, dest in [("bin",  ""), ("share/owncloud/i18n",  "")]:
