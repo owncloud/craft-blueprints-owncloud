@@ -202,10 +202,17 @@ class Package(CMakePackageBase):
         return super().createPackage()
 
     def preArchive(self):
-        if self.subinfo.options.dynamic.enableCrashReporter:
-            binaries = utils.filterDirectoryContent(self.archiveDir(),
-                                                  whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
-                                                  blacklist=lambda x, root: True)
-            if not self.dumpSymbols(binaries, self.archiveDebugDir()):
-                return False
+        if CraftCore.compiler.isWindows and not isinstance(self, PortablePackager):
+            archiveDir = Path(self.archiveDir())
+            # TODO: install translations to the correct location in the first place
+            for src, dest in [("bin",  ""), ("share/owncloud/i18n",  "")]:
+                if not utils.mergeTree(archiveDir / src, archiveDir / dest):
+                    return True
+        else:
+            if self.subinfo.options.dynamic.enableCrashReporter:
+                binaries = utils.filterDirectoryContent(self.archiveDir(),
+                                                    whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
+                                                    blacklist=lambda x, root: True)
+                if not self.dumpSymbols(binaries, self.archiveDebugDir()):
+                    return False
         return super().preArchive()
