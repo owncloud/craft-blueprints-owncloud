@@ -32,7 +32,7 @@ class Package(MakeFilePackageBase):
         dest = Path(self.imageDir()) / "lib"
         src = Path(self.buildDir()) / "Build/Products/Release"
         utils.createDir(dest)
-        files = ["Sparkle.framework", "Sparkle.framework.dSym"]
+        files = ["Sparkle.framework"]
         for f in files:
             if not utils.copyDir(src / f, dest / f):
                 return False
