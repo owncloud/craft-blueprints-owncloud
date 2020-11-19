@@ -6,6 +6,7 @@ class subinfo(info.infoclass):
         self.svnTargets['master'] = "[git]https://github.com/sparkle-project/Sparkle.git"
         for ver in ["1.22.0", "1.24.0"]:
             self.svnTargets[ver] = f"[git]https://github.com/sparkle-project/Sparkle.git||{ver}"
+        self.patchToApply["1.24.0"] = [("sparkle-20201119.patch", 1)]
         self.description = "A software update framework for macOS"
         self.webpage = "https://sparkle-project.org"
         self.defaultTarget = '1.24.0'
