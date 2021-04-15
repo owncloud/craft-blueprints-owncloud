@@ -39,6 +39,9 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qtsvg"] = None
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
+        if CraftCore.compiler.isLinux:
+            self.runtimeDependencies["libs/qt5/qtwayland"] = None
+
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
 
