@@ -19,7 +19,7 @@ class subinfo(info.infoclass):
                                           gitUrl="[git]https://github.com/owncloud/client")
 
         # we don't have that branche yet
-        self.svnTargets["2.8"] = self.svnTargets["master"]
+        self.svnTargets["2.9"] = self.svnTargets["master"]
 
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
@@ -42,8 +42,6 @@ class subinfo(info.infoclass):
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
 
-        if self.buildTarget != "master" and self.buildTarget < CraftVersion("2.6"):
-            self.runtimeDependencies["libs/qt5/qtwebkit"] = None
         if self.options.dynamic.buildTests:
             self.buildDependencies["dev-utils/cmocka"] = None
 
