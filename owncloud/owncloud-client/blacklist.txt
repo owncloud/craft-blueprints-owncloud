@@ -1,3 +1,4 @@
+.*\.sh
 translations/assistant.*.qm
 translations/designer.*.qm
 translations/linguist.*.qm
@@ -9,6 +10,17 @@ translations/qtscript.*.qm
 translations/qtserialport.*.qm
 
 
+(bin/data|share)/gtk-doc/.*
+(bin/data|share)/glib-2.0/.*
+lib/gettext/.*
+lib/metatypes/.*
+(bin/data|share)/gettext/.*
+(bin/data|share)/gettext-0.19.8/.*
+(bin/data|share)/gdb/.*
+(bin/data|share)/info/.*
+(bin/data|share)/emacs/.*
+(bin/data|share)/aclocal/.*
+(bin/data|share)/bash-completion/.*
 
 translations/qtdeclarative.*.qm
 translations/qtquickcontrols.*.qm
