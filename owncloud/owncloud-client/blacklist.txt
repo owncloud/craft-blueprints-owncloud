@@ -9,6 +9,7 @@ translations/qtmultimedia.*.qm
 translations/qtscript.*.qm
 translations/qtserialport.*.qm
 
+plugins/bearer/.*
 
 (bin/data|share)/gtk-doc/.*
 (bin/data|share)/glib-2.0/.*
