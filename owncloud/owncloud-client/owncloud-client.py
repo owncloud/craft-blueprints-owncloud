@@ -11,7 +11,7 @@ import glob
 class subinfo(info.infoclass):
     def registerOptions(self):
         self.options.dynamic.registerOption("buildVfsWin", False)
-        self.options.dynamic.registerOption("buildNumber", None)
+        self.options.dynamic.registerOption("buildNumber", "")
         self.options.dynamic.registerOption("enableCrashReporter", False)
 
     def setTargets(self):
