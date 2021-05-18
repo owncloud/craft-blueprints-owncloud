@@ -59,8 +59,10 @@ class Package(CMakePackageBase):
         # Pending PR to move to standard BUILD_TESTING: https://github.com/owncloud/client/pull/6917#issuecomment-444845521
         self.subinfo.options.configure.args += ["-DUNIT_TESTING={testing}".format(testing="ON" if self.buildTests else "OFF")]
 
-        if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
-            raise Exception(f"OWNCLOUD_CMAKE_PARAMETERS no longer supported:{os.environ['OWNCLOUD_CMAKE_PARAMETERS']}")
+        extraParam = os.environ.get("OWNCLOUD_CMAKE_PARAMETERS", None)
+        if extraParam:
+            # appending a string will convert the args to a string
+            self.subinfo.options.configure.args += self.subinfo.options.configure.args
         if self.subinfo.options.dynamic.buildVfsWin:
             self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
             self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"]
