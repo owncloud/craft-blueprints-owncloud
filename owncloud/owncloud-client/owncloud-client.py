@@ -11,6 +11,7 @@ import glob
 class subinfo(info.infoclass):
     def registerOptions(self):
         self.options.dynamic.registerOption("buildVfsWin", False)
+        self.options.dynamic.registerOption("buildNumber", None)
         self.options.dynamic.registerOption("enableCrashReporter", False)
 
     def setTargets(self):
@@ -71,6 +72,8 @@ class Package(CMakePackageBase):
             self.subinfo.options.dynamic.enableCrashReporter = configparser.RawConfigParser.BOOLEAN_STATES.get(os.environ.get("ENABLE_CRASHREPORTS").lower())
         if self.subinfo.options.dynamic.enableCrashReporter:
             self.subinfo.options.configure.args += ["-DWITH_CRASHREPORTER=ON"]
+        if self.subinfo.options.dynamic.buildNumber:
+            self.subinfo.options.configure.args += [f"-DMIRALL_VERSION_BUILD={self.subinfo.options.dynamic.buildNumber}"]
 
 
     @property
