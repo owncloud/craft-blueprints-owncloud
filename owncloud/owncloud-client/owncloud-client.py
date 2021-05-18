@@ -60,7 +60,7 @@ class Package(CMakePackageBase):
         self.subinfo.options.configure.args += ["-DUNIT_TESTING={testing}".format(testing="ON" if self.buildTests else "OFF")]
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
-            raise Exception("OWNCLOUD_CMAKE_PARAMETERS no longer supported")
+            raise Exception(f"OWNCLOUD_CMAKE_PARAMETERS no longer supported:{os.environ['OWNCLOUD_CMAKE_PARAMETERS']}")
         if self.subinfo.options.dynamic.buildVfsWin:
             self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
             self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"]
