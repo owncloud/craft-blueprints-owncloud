@@ -60,7 +60,7 @@ class Package(CMakePackageBase):
         # Pending PR to move to standard BUILD_TESTING: https://github.com/owncloud/client/pull/6917#issuecomment-444845521
         self.subinfo.options.configure.args += ["-DUNIT_TESTING={testing}".format(testing="ON" if self.buildTests else "OFF")]
 
-        extraParam = os.environ.get("OWNCLOUD_CMAKE_PARAMETERS", None)
+        extraParam = os.environ.get("OWNCLOUD_CMAKE_PARAMETERS", "")
         if extraParam:
             # appending a string will convert the args to a string
             self.subinfo.options.configure.args += self.subinfo.options.configure.args
