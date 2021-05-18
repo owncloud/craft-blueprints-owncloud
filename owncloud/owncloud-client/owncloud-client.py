@@ -57,18 +57,18 @@ class Package(CMakePackageBase):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
         # Pending PR to move to standard BUILD_TESTING: https://github.com/owncloud/client/pull/6917#issuecomment-444845521
-        self.subinfo.options.configure.args += " -DUNIT_TESTING={testing} ".format(testing="ON" if self.buildTests else "OFF")
+        self.subinfo.options.configure.args += ["-DUNIT_TESTING={testing}".format(testing="ON" if self.buildTests else "OFF")]
 
         if 'OWNCLOUD_CMAKE_PARAMETERS' in os.environ:
-                self.subinfo.options.configure.args += os.environ['OWNCLOUD_CMAKE_PARAMETERS']
+            raise Exception("OWNCLOUD_CMAKE_PARAMETERS no longer supported")
         if self.subinfo.options.dynamic.buildVfsWin:
             self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
-            self.subinfo.options.configure.args += f" -DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"
+            self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"]
 
         if "ENABLE_CRASHREPORTS" in os.environ:
             self.subinfo.options.dynamic.enableCrashReporter = configparser.RawConfigParser.BOOLEAN_STATES.get(os.environ.get("ENABLE_CRASHREPORTS").lower())
         if self.subinfo.options.dynamic.enableCrashReporter:
-            self.subinfo.options.configure.args += " -DWITH_CRASHREPORTER=ON"
+            self.subinfo.options.configure.args += ["-DWITH_CRASHREPORTER=ON"]
 
 
     @property
