@@ -206,7 +206,7 @@ class Package(CMakePackageBase):
         if isinstance(self, NullsoftInstallerPackager):
             archiveDir = Path(self.archiveDir())
             # TODO: install translations to the correct location in the first place
-            for src, dest in [("bin",  ""), ("share/owncloud/i18n",  "")]:
+            for src, dest in [("bin",  "")]:
                 if not utils.mergeTree(archiveDir / src, archiveDir / dest):
                     return True
         else:
