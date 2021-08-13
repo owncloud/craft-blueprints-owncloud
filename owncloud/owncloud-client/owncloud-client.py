@@ -180,6 +180,14 @@ class Package(CMakePackageBase):
             CraftCore.log.info('Writing symbols to: %s' % symbolFile)
         return True
 
+    def owncloudVersion(self):
+        versionFile = self.sourceDir() / "VERSION.cmake"
+        if not versionFile.exists():
+            return None
+        with versionFile.open("rt", encoding="UTF-8") as f:
+             lines = f.read()
+        return ".".join([re.findall(f"{x}\\s+(\\d+)", lines)[0] for x in ["MIRALL_VERSION_MAJOR", "MIRALL_VERSION_MINOR", "MIRALL_VERSION_PATCH"]])
+
     def createPackage(self):
         self.blacklist_file.append(os.path.join(self.packageDir(), 'blacklist.txt'))
         self.defines["appname"] = self.applicationExecutable
@@ -188,6 +196,7 @@ class Package(CMakePackageBase):
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
+        self.defines["version"] = self.owncloudVersion() or self.defines["version"]
 
 
         self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
