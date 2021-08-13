@@ -186,7 +186,10 @@ class Package(CMakePackageBase):
             return None
         with versionFile.open("rt", encoding="UTF-8") as f:
              lines = f.read()
-        return ".".join([re.findall(f"{x}\\s+(\\d+)", lines)[0] for x in ["MIRALL_VERSION_MAJOR", "MIRALL_VERSION_MINOR", "MIRALL_VERSION_PATCH"]])
+        version = [re.findall(f"{x}\\s+(\\d+)", lines)[0] for x in ["MIRALL_VERSION_MAJOR", "MIRALL_VERSION_MINOR", "MIRALL_VERSION_PATCH"]]
+        if self.subinfo.options.dynamic.buildNumbe:
+            version.append(self.subinfo.options.dynamic.buildNumbe)
+        return ".".join(version)
 
     def createPackage(self):
         self.blacklist_file.append(os.path.join(self.packageDir(), 'blacklist.txt'))
@@ -197,7 +200,6 @@ class Package(CMakePackageBase):
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
         self.defines["version"] = self.owncloudVersion() or self.defines["version"]
-
 
         self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
 
