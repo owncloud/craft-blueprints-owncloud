@@ -183,6 +183,7 @@ class Package(CMakePackageBase):
     def owncloudVersion(self):
         versionFile = self.sourceDir() / "VERSION.cmake"
         if not versionFile.exists():
+            CraftCore.log.warnig(f"Failed to find {versionFile}")
             return None
         with versionFile.open("rt", encoding="UTF-8") as f:
              lines = f.read()
@@ -199,7 +200,9 @@ class Package(CMakePackageBase):
         self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
-        self.defines["version"] = self.owncloudVersion() or self.defines["version"]
+        ver = self.owncloudVersion()
+        if ver:
+            self.defines["version"] =  ver
 
         self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
 
