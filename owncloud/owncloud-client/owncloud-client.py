@@ -134,17 +134,20 @@ class Package(CMakePackageBase):
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
+            debugInfoPath = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
             command = ['dump_syms']
             if CraftCore.compiler.isMacOS:
-                relPath = binaryFile.relative_to(self.archiveDir())
-                dSym = Path(CraftCore.standardDirs.craftRoot()) / relPath
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), dSym.parents))
                 if bundleDir:
-                    dSym = bundleDir[-1]
-                dSym = Path(f"{dSym}.dSYM")
-                if dSym.exists():
-                    command += ["-g", dSym]
+                    debugInfoPath = bundleDir[-1]
+                debugInfoPath = Path(f"{debugInfoPath}.dSYM")
+                if debugInfoPath.exists():
+                    command += ["-g", debugInfoPath]
+
             command.append(binaryFile)
+            if CraftCore.compiler.isLinux:
+                command.append(debugInfoPath.parent)
+
             with io.BytesIO() as out:
                 utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
                 outBytes = out.getvalue()
