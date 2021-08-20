@@ -137,7 +137,7 @@ class Package(CMakePackageBase):
             debugInfoPath = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
             command = ['dump_syms']
             if CraftCore.compiler.isMacOS:
-                bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), dSym.parents))
+                bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
                 if bundleDir:
                     debugInfoPath = bundleDir[-1]
                 debugInfoPath = Path(f"{debugInfoPath}.dSYM")
