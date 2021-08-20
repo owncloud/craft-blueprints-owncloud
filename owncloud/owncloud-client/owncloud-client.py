@@ -186,7 +186,7 @@ class Package(CMakePackageBase):
     def owncloudVersion(self):
         versionFile = self.sourceDir() / "VERSION.cmake"
         if not versionFile.exists():
-            CraftCore.log.warnig(f"Failed to find {versionFile}")
+            CraftCore.log.warning(f"Failed to find {versionFile}")
             return None
         with versionFile.open("rt", encoding="UTF-8") as f:
              lines = f.read()
