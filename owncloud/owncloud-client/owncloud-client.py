@@ -44,7 +44,7 @@ class subinfo(info.infoclass):
             self.runtimeDependencies["libs/qt5/qtwayland"] = None
 
         if self.options.dynamic.buildVfsWin:
-            self.runtimeDependencies["owncloud/client-plugin-vfs-win"] = None
+            self.runtimeDependencies["owncloud/client-desktop-vfs-win"] = None
 
         if self.options.dynamic.buildTests:
             self.buildDependencies["dev-utils/cmocka"] = None
@@ -65,7 +65,7 @@ class Package(CMakePackageBase):
             # appending a string will convert the args to a string
             self.subinfo.options.configure.args += self.subinfo.options.configure.args
         if self.subinfo.options.dynamic.buildVfsWin:
-            self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-plugin-vfs-win")
+            self.win_vfs_plugin = CraftPackageObject.get("owncloud/client-desktop-vfs-win")
             self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"]
         if self.subinfo.options.dynamic.enableCrashReporter:
             self.subinfo.options.configure.args += ["-DWITH_CRASHREPORTER=ON"]
