@@ -33,7 +33,6 @@ class subinfo(info.infoclass):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
-
         self.buildDependencies["libs/libre-graph-api-cpp-qt-client"] = None
 
         self.runtimeDependencies["libs/sparkle"] = None
@@ -60,7 +59,7 @@ class subinfo(info.infoclass):
             self.runtimeDependencies["libs/libcloudproviders"] = None
 
         if self.options.dynamic.enableCrashReporter:
-            self.buildDependencies["dev-utils/breakpad-tools"] = None
+            self.buildDependencies["dev-utils/breakpad"] = None
 
 
 
