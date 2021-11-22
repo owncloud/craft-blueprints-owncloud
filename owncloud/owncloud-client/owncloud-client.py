@@ -36,6 +36,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/sqlite"] = None
         self.runtimeDependencies["libs/qt5/qtbase"] = None
         self.runtimeDependencies["libs/qt5/qtmacextras"] = None
+        self.runtimeDependencies["libs/qt5/qtwinextras"] = None
         self.runtimeDependencies["libs/qt5/qttranslations"] = None
         self.runtimeDependencies["libs/qt5/qtsvg"] = None
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
