@@ -13,6 +13,7 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("buildVfsWin", False)
         self.options.dynamic.registerOption("buildNumber", "")
         self.options.dynamic.registerOption("enableCrashReporter", False)
+        self.options.dynamic.registerOption("enableAppImageUpdate", False)
 
     def setTargets(self):
         self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
@@ -31,6 +32,7 @@ class subinfo(info.infoclass):
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
         self.buildDependencies["dev-utils/breakpad-tools"] = None
+
         self.runtimeDependencies["libs/sparkle"] = None
         self.runtimeDependencies["libs/zlib"] = None
         self.runtimeDependencies["libs/sqlite"] = None
@@ -41,6 +43,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qtsvg"] = None
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
+
         if CraftCore.compiler.isLinux:
             self.runtimeDependencies["libs/qt5/qtwayland"] = None
 
@@ -50,6 +53,8 @@ class subinfo(info.infoclass):
         if self.options.dynamic.buildTests:
             self.buildDependencies["dev-utils/cmocka"] = None
 
+        if self.options.dynamic.enableAppImageUpdate:
+            self.runtimeDependencies("libs/AppImageUpdate") = None
 
 
 from Package.CMakePackageBase import *
