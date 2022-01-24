@@ -6,16 +6,16 @@ class subinfo(info.infoclass):
     def setTargets(self):
         self.description = "AppImageUpdate lets you update AppImages in a decentral way using information embedded in the AppImage itself."
 
-        for ver in ["2.0.0-alpha-1-20220121"]:
+        for ver in ["2.0.0-alpha-1-20220124"]:
             self.targets[ver] = f"https://github.com/AppImage/AppImageUpdate/archive/refs/tags/{ver}.tar.gz"
             self.targetInstSrc[ver] = f"AppImageUpdate-{ver}"
 
-        self.targetDigests["2.0.0-alpha-1-20220121"] = (
-            ["fd8bbfd4459d8b4e4c1e7c95d8390a035fb8939d5a203c808a30419b150cdced"],
+        self.targetDigests["2.0.0-alpha-1-20220124"] = (
+            ["d1b9edea302b982fd1d3be4783d3cd6d3ebe0c6c7e284b73abc20925d0e1e246"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
-        self.defaultTarget = "2.0.0-alpha-1-20220121"
+        self.defaultTarget = "2.0.0-alpha-1-20220124"
 
     def setDependencies(self):
         self.runtimeDependencies["libs/qt5/qtbase"] = None
