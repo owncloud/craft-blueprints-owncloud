@@ -54,7 +54,7 @@ class subinfo(info.infoclass):
             self.buildDependencies["dev-utils/cmocka"] = None
 
         if self.options.dynamic.enableAppImageUpdate:
-            self.runtimeDependencies("libs/AppImageUpdate") = None
+            self.runtimeDependencies["libs/AppImageUpdate"] = None
 
 
 from Package.CMakePackageBase import *
