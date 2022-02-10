@@ -31,7 +31,6 @@ class subinfo(info.infoclass):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
-        self.buildDependencies["dev-utils/breakpad-tools"] = None
 
         self.runtimeDependencies["libs/sparkle"] = None
         self.runtimeDependencies["libs/zlib"] = None
@@ -55,6 +54,10 @@ class subinfo(info.infoclass):
 
         if self.options.dynamic.enableAppImageUpdate:
             self.runtimeDependencies["libs/app-image-update"] = None
+
+        if self.subinfo.options.dynamic.enableCrashReporter:
+            self.buildDependencies["dev-utils/breakpad-tools"] = None
+
 
 
 from Package.CMakePackageBase import *
