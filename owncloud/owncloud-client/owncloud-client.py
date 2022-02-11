@@ -55,7 +55,7 @@ class subinfo(info.infoclass):
         if self.options.dynamic.enableAppImageUpdate:
             self.runtimeDependencies["libs/app-image-update"] = None
 
-        if self.subinfo.options.dynamic.enableCrashReporter:
+        if self.options.dynamic.enableCrashReporter:
             self.buildDependencies["dev-utils/breakpad-tools"] = None
 
 
