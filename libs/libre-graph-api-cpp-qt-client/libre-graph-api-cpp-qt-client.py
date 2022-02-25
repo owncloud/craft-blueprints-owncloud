@@ -14,7 +14,8 @@ class subinfo(info.infoclass):
         self.webpage = "https://owncloud.dev/libre-graph-api/"
 
     def setDependencies(self):
-        self.buildDependencies["craft/craft-blueprints-owncloud"] = "default"
+        self.buildDependencies["craft/craft-blueprints-owncloud"] = None
+        self.runtimeDependencies["libs/qt5/qtbase"] = None
 
 from Package.CMakePackageBase import *
 
