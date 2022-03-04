@@ -19,6 +19,7 @@ class subinfo(info.infoclass):
 
     def setDependencies(self):
         self.runtimeDependencies["libs/cpr"] = None
+        self.runtimeDependencies["libs/args"] = None
 
 
 class Package(CMakePackageBase):
