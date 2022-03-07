@@ -32,6 +32,8 @@ class subinfo(info.infoclass):
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
 
+        self.buildDependencies["libs/libre-graph-api-cpp-qt-client"] = None
+
         self.runtimeDependencies["libs/sparkle"] = None
         self.runtimeDependencies["libs/zlib"] = None
         self.runtimeDependencies["libs/sqlite"] = None

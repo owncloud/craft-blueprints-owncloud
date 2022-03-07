@@ -6,9 +6,10 @@ import re
 
 class subinfo(info.infoclass):
     def setTargets(self):
-        self.svnTargets["v0.11.0"] = "https://github.com/owncloud/libre-graph-api-cpp-qt-client.git||v0.11.0"
-        self.targetConfigurePath["v0.11.0"] = "client"
-        self.defaultTarget = "v0.11.0"
+        for ver in ["v0.11.0", "v0.12.0"]:
+            self.svnTargets[ver] = f"https://github.com/owncloud/libre-graph-api-cpp-qt-client.git||{ver}"
+            self.targetConfigurePath[ver] = "client"
+            self.defaultTarget = ver
 
         self.description = "Libre Graph Cloud Collaboration API - Qt bindings"
         self.webpage = "https://owncloud.dev/libre-graph-api/"
