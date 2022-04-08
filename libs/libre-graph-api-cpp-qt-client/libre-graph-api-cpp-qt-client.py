@@ -6,7 +6,7 @@ import re
 
 class subinfo(info.infoclass):
     def setTargets(self):
-        for ver in ["v0.11.0", "v0.12.0"]:
+        for ver in ["v0.11.0", "v0.12.0", "v0.13.2"]:
             self.svnTargets[ver] = f"https://github.com/owncloud/libre-graph-api-cpp-qt-client.git||{ver}"
             self.targetConfigurePath[ver] = "client"
             self.defaultTarget = ver
