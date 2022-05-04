@@ -21,6 +21,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qtbase"] = None
         self.runtimeDependencies["libs/zsync2"] = None
         self.runtimeDependencies["libs/libappimage"] = None
+        self.runtimeDependencies["libs/cpr"] = None
 
 
 class Package(CMakePackageBase):
