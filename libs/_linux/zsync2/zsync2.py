@@ -6,16 +6,16 @@ class subinfo(info.infoclass):
     def setTargets(self):
         self.description = "Partial/differential file download client over HTTP(S)"
 
-        for ver in ["2.0.0-alpha-1-20220121"]:
+        for ver in ["2.0.0-alpha-1-20220505"]:
             self.targets[ver] = f"https://github.com/AppImage/zsync2/archive/refs/tags/{ver}.tar.gz"
             self.targetInstSrc[ver] = f"zsync2-{ver}"
 
-        self.targetDigests["2.0.0-alpha-1-20220121"] = (
-            ["f663f8a66f0ea940206debb027d963e772a2422b570fbd69e437c9e15b2c16f4"],
+        self.targetDigests["2.0.0-alpha-1-20220505"] = (
+            ["43057b5d6ded0736cb3cece5d955f2e6fd3ab04e6f6577292f8bb1f4326af8ac"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
-        self.defaultTarget = "2.0.0-alpha-1-20220121"
+        self.defaultTarget = "2.0.0-alpha-1-20220505"
 
     def setDependencies(self):
         self.runtimeDependencies["libs/cpr"] = None
