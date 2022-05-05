@@ -13,7 +13,8 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("buildVfsWin", False)
         self.options.dynamic.registerOption("buildNumber", "")
         self.options.dynamic.registerOption("enableCrashReporter", False)
-        self.options.dynamic.registerOption("enableAppImageUpdate", False)
+        self.options.dynamic.registerOption("enableAppImageUpdater", False)
+        self.options.dynamic.registerOption("enableLibcloudproviders", False)
 
     def setTargets(self):
         self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
@@ -54,8 +55,11 @@ class subinfo(info.infoclass):
         if self.options.dynamic.buildTests:
             self.buildDependencies["dev-utils/cmocka"] = None
 
-        if self.options.dynamic.enableAppImageUpdate:
-            self.runtimeDependencies["libs/app-image-update"] = None
+        if self.options.dynamic.enableAppImageUpdater:
+            self.runtimeDependencies["libs/libappimageupdate"] = None
+
+        if self.options.dynamic.enableLibcloudproviders:
+            self.runtimeDependencies["libs/libcloudproviders"] = None
 
         if self.options.dynamic.enableCrashReporter:
             self.buildDependencies["dev-utils/breakpad-tools"] = None
@@ -80,9 +84,12 @@ class Package(CMakePackageBase):
             self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS={self.win_vfs_plugin.instance.sourceDir()}"]
         if self.subinfo.options.dynamic.enableCrashReporter:
             self.subinfo.options.configure.args += ["-DWITH_CRASHREPORTER=ON"]
+        if self.subinfo.options.dynamic.enableAppImageUpdater:
+            self.subinfo.options.configure.args += ["-DWITH_APPIMAGEUPDATER=ON"]
+        if self.subinfo.options.dynamic.enableLibcloudproviders:
+            self.subinfo.options.configure.args += ["-DWITH_LIBCLOUDPROVIDERS=ON"]
         if self.subinfo.options.dynamic.buildNumber:
             self.subinfo.options.configure.args += [f"-DMIRALL_VERSION_BUILD={self.subinfo.options.dynamic.buildNumber}"]
-
 
     @property
     def applicationExecutable(self):
