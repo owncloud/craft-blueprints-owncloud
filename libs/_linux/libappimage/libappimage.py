@@ -6,16 +6,16 @@ class subinfo(info.infoclass):
     def setTargets(self):
         self.description = "Implements functionality for dealing with AppImage files"
 
-        for ver in ["1.0.4"]:
+        for ver in ["1.0.4-1"]:
             self.targets[ver] = f"https://github.com/AppImage/libappimage/archive/refs/tags/v{ver}.tar.gz"
             self.targetInstSrc[ver] = f"libappimage-{ver}"
 
-        self.targetDigests["1.0.4"] = (
-            ["2af2adb682e8bf67dd726e79b3bc3af5a0d7c1533848bda56efa5cafa0dac931"],
+        self.targetDigests["1.0.4-1"] = (
+            ["b03ce735c7672ae01f152be24367844dd0d1111000c34a62d970f83e025fe716"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
-        self.defaultTarget = "1.0.4"
+        self.defaultTarget = "1.0.4-1"
 
     def setDependencies(self):
         self.runtimeDependencies["libs/liblzma"] = None
