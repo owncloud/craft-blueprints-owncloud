@@ -20,7 +20,7 @@ class subinfo(info.infoclass):
     def setDependencies(self):
         self.runtimeDependencies["libs/qt5/qtbase"] = None
         self.runtimeDependencies["libs/zsync2"] = None
-        self.runtimeDependencies["libs/libappimage"] = None
+        self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
 
 
