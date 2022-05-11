@@ -22,6 +22,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/zsync2"] = None
         self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
+        self.runtimeDependencies["libs/argagg"] = None
 
 
 class Package(CMakePackageBase):
