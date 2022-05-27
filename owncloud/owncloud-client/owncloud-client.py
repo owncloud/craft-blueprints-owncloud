@@ -21,9 +21,6 @@ class subinfo(info.infoclass):
                                           tarballInstallSrc="owncloudclient-${VERSION}",
                                           gitUrl="[git]https://github.com/owncloud/client")
 
-        # we don't have that branche yet
-        self.svnTargets["2.11"] = self.svnTargets["master"]
-
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
         self.webpage = "https://owncloud.org"
