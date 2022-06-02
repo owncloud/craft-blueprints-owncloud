@@ -11,7 +11,7 @@ class subinfo(info.infoclass):
             self.targetInstSrc[ver] = f"zsync2-{ver}"
 
         self.targetDigests["2.0.0-alpha-1-20220602"] = (
-            ["6e25905fa4fc3ce387c42d78a99f002c5721f3ba5fa657c77968e29bba254e26"],
+            ["bcf7e80cdc2ce2ea0341e4eedff4372d3925adf8c31f2d12104374d6ab420e63"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
