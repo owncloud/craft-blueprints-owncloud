@@ -69,8 +69,6 @@ class Package(CMakePackageBase):
     def __init__(self):
         CMakePackageBase.__init__(self)
         self.subinfo.options.fetch.checkoutSubmodules = True
-        # Pending PR to move to standard BUILD_TESTING: https://github.com/owncloud/client/pull/6917#issuecomment-444845521
-        self.subinfo.options.configure.args += ["-DUNIT_TESTING={testing}".format(testing="ON" if self.buildTests else "OFF")]
 
         extraParam = os.environ.get("OWNCLOUD_CMAKE_PARAMETERS", "")
         if extraParam:
