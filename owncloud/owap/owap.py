@@ -19,8 +19,8 @@ class subinfo(info.infoclass):
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
 
-        self.runtimeDependencies["libs/qt5/qtbase"] = None
-
+        #actually a runtime dep but for now we only wan't to deploy the binary
+        self.buildDependencies["owncloud/owncloud-client"] = None
 
 from Package.CMakePackageBase import *
 
