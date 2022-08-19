@@ -49,9 +49,6 @@ class subinfo(info.infoclass):
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-desktop-vfs-win"] = None
 
-        if self.options.dynamic.buildTests:
-            self.buildDependencies["dev-utils/cmocka"] = None
-
         if self.options.dynamic.enableAppImageUpdater:
             self.runtimeDependencies["libs/libappimageupdate"] = None
 
