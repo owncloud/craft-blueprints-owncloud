@@ -17,6 +17,7 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("enableCrashReporter", False)
         self.options.dynamic.registerOption("enableAppImageUpdater", False)
         self.options.dynamic.registerOption("enableLibcloudproviders", False)
+        self.options.dynamic.registerOption("forceAsserts", False)
 
     def setTargets(self):
         self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
@@ -84,6 +85,8 @@ class Package(CMakePackageBase):
             self.subinfo.options.configure.args += ["-DWITH_APPIMAGEUPDATER=ON"]
         if self.subinfo.options.dynamic.enableLibcloudproviders:
             self.subinfo.options.configure.args += ["-DWITH_LIBCLOUDPROVIDERS=ON"]
+        if self.subinfo.options.dynamic.forceAsserts:
+            self.subinfo.options.configure.args += ["-DFORCE_ASSERTS=ON"]
         if self.subinfo.options.dynamic.buildNumber:
             self.subinfo.options.configure.args += [f"-DMIRALL_VERSION_BUILD={self.subinfo.options.dynamic.buildNumber}"]
 
