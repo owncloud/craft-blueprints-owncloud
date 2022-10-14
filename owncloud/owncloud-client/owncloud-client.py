@@ -8,6 +8,8 @@ import sys
 import subprocess
 import glob
 
+from Packager.NullsoftInstallerPackager import NullsoftInstallerPackager
+
 class subinfo(info.infoclass):
     def registerOptions(self):
         self.options.dynamic.registerOption("buildVfsWin", False)
