@@ -208,8 +208,8 @@ class Package(CMakePackageBase):
         with versionFile.open("rt", encoding="UTF-8") as f:
              lines = f.read()
         version = [re.findall(f"{x}\\s+(\\d+)", lines)[0] for x in ["MIRALL_VERSION_MAJOR", "MIRALL_VERSION_MINOR", "MIRALL_VERSION_PATCH"]]
-        if self.subinfo.options.dynamic.buildNumbe:
-            version.append(self.subinfo.options.dynamic.buildNumbe)
+        if self.subinfo.options.dynamic.buildNumber:
+            version.append(self.subinfo.options.dynamic.buildNumber)
         return ".".join(version)
 
     def createPackage(self):
