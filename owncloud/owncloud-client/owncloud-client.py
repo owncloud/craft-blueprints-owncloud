@@ -10,6 +10,7 @@ import glob
 
 from Packager.NullsoftInstallerPackager import NullsoftInstallerPackager
 
+
 class subinfo(info.infoclass):
     def registerOptions(self):
         self.options.dynamic.registerOption("buildVfsWin", False)
@@ -205,12 +206,37 @@ class Package(CMakePackageBase):
         if not versionFile.exists():
             CraftCore.log.warning(f"Failed to find {versionFile}")
             return None
-        with versionFile.open("rt", encoding="UTF-8") as f:
-             lines = f.read()
-        version = [re.findall(f"{x}\\s+(\\d+)", lines)[0] for x in ["MIRALL_VERSION_MAJOR", "MIRALL_VERSION_MINOR", "MIRALL_VERSION_PATCH"]]
+
+        print_var_script = os.path.join(self.packageDir(), "print-var.cmake")
+
+        def get_var(name) -> str:
+            command = ["cmake", f"-DTARGET_SCRIPT={os.path.basename(versionFile)}", f"-DTARGET_VAR={name}",  "-P", print_var_script]
+            value = subprocess.check_output(
+                command,
+                cwd=os.path.dirname(versionFile),
+                stderr=subprocess.STDOUT,
+                # make sure this call returns str instead of bytes
+                universal_newlines=True,
+            )
+            value = value.strip("\n ")
+            assert value, f"{name} empty"
+            return value
+
+        major = get_var("MIRALL_VERSION_MAJOR")
+        minor = get_var("MIRALL_VERSION_MINOR")
+        patch = get_var("MIRALL_VERSION_PATCH")
+        suffix = get_var("MIRALL_VERSION_SUFFIX")
+
+        suffix_str = ""
+        if suffix:
+            suffix_str = f"-{suffix}"
+
+        version_str = f"{major}.{minor}.{patch}{suffix_str}"
+
         if self.subinfo.options.dynamic.buildNumber:
-            version.append(self.subinfo.options.dynamic.buildNumber)
-        return ".".join(version)
+            version_str += f".{self.subinfo.options.dynamic.buildNumber}"
+
+        return version_str
 
     def createPackage(self):
         self.blacklist_file.append(os.path.join(self.packageDir(), 'blacklist.txt'))
