@@ -3,4 +3,4 @@ if(NOT TARGET_SCRIPT OR NOT TARGET_VAR)
 endif()
 
 include(${TARGET_SCRIPT})
-message("${${TARGET_VAR}}")
+execute_process(COMMAND ${CMAKE_COMMAND} -E echo "${${TARGET_VAR}}")

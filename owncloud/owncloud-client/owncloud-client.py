@@ -214,7 +214,6 @@ class Package(CMakePackageBase):
             value = subprocess.check_output(
                 command,
                 cwd=os.path.dirname(versionFile),
-                stderr=subprocess.STDOUT,
                 # make sure this call returns str instead of bytes
                 universal_newlines=True,
             )
