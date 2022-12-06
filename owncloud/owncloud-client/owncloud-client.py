@@ -217,7 +217,7 @@ class Package(CMakePackageBase):
                 # make sure this call returns str instead of bytes
                 universal_newlines=True,
             )
-            value = value.strip("\n ")
+            value = value.strip()
             assert value, f"{name} empty"
             return value
 
