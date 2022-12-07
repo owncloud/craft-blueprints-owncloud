@@ -210,7 +210,13 @@ class Package(CMakePackageBase):
         print_var_script = os.path.join(self.packageDir(), "print-var.cmake")
 
         def get_var(name) -> str:
-            command = ["cmake", f"-DTARGET_SCRIPT={os.path.basename(versionFile)}", f"-DTARGET_VAR={name}",  "-P", print_var_script]
+            command = ["cmake", f"-DTARGET_SCRIPT={os.path.basename(versionFile)}", f"-DTARGET_VAR={name}"]
+
+            if self.subinfo.options.dynamic.buildNumber:
+                command.append(f"-DMIRALL_VERSION_BUILD={self.subinfo.options.dynamic.buildNumber}")
+
+            command += ["-P", print_var_script]
+
             value = subprocess.check_output(
                 command,
                 cwd=os.path.dirname(versionFile),
@@ -221,19 +227,9 @@ class Package(CMakePackageBase):
             assert value, f"{name} empty"
             return value
 
-        major = get_var("MIRALL_VERSION_MAJOR")
-        minor = get_var("MIRALL_VERSION_MINOR")
-        patch = get_var("MIRALL_VERSION_PATCH")
-        suffix = get_var("MIRALL_VERSION_SUFFIX")
+        version_str = get_var("MIRALL_VERSION_STRING")
 
-        suffix_str = ""
-        if suffix:
-            suffix_str = f"-{suffix}"
-
-        version_str = f"{major}.{minor}.{patch}{suffix_str}"
-
-        if self.subinfo.options.dynamic.buildNumber:
-            version_str += f".{self.subinfo.options.dynamic.buildNumber}"
+        print(f"*** version string fetched with CMake: {version_str} ***")
 
         return version_str
 
