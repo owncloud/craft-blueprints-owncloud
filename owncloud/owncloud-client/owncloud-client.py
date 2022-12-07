@@ -226,15 +226,13 @@ class Package(CMakePackageBase):
         patch = get_var("MIRALL_VERSION_PATCH")
         suffix = get_var("MIRALL_VERSION_SUFFIX")
 
-        suffix_str = ""
-        if suffix:
-            suffix_str = f"-{suffix}"
-
-        version_str = f"{major}.{minor}.{patch}{suffix_str}"
+        version_str = f"{major}.{minor}.{patch}"
 
         if self.subinfo.options.dynamic.buildNumber:
             version_str += f".{self.subinfo.options.dynamic.buildNumber}"
 
+        if suffix:
+            version_str = f"{version_str}-{suffix}"
         return version_str
 
     def createPackage(self):
