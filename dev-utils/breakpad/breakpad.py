@@ -8,7 +8,7 @@ from Package.AutoToolsPackageBase import AutoToolsPackageBase
 class subinfo(info.infoclass):
 
     def setTargets(self):
-        if CraftCore.compiler.isWindows or CraftCore.compiler.isMacOS:
+        if not CraftCore.compiler.isLinux:
             for ver in ["pecoff-dwarf-on-git-20171117", "pecoff-dwarf-on-git-20171117-fetch-externals-on-win"]:
                 self.svnTargets[ver] = f"[git]https://github.com/dschmidt/google-breakpad|{ver}|"
                 self.patchToApply[ver] = [("0001-Add-CMake-script-to-build-dump_syms.patch", 1),
@@ -39,7 +39,7 @@ class subinfo(info.infoclass):
             self.buildDependencies["dev-utils/depot-tools"] = None
         self.buildDependencies["virtual/base"] = None
 
-if not CraftCore.compiler.isMSVC():
+if CraftCore.compiler.isLinux:
     class Package(AutoToolsPackageBase):
         def __init__(self, **args):
             AutoToolsPackageBase.__init__(self)
