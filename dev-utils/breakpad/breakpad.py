@@ -33,10 +33,11 @@ class subinfo(info.infoclass):
         self.webpage = "https://github.com/jon-turney/google-breakpad"
 
     def setDependencies(self):
-        if  CraftCore.compiler.isMSVC():
-            self.buildDependencies["dev-utils/python2"] = None
-        else:
+        if CraftCore.compiler.isLinux:
             self.buildDependencies["dev-utils/depot-tools"] = None
+            self.buildDependencies["libs/elfutils"] = None
+        else:
+            self.buildDependencies["dev-utils/python2"] = None
         self.buildDependencies["virtual/base"] = None
 
 if CraftCore.compiler.isLinux:
