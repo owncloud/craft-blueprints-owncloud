@@ -150,19 +150,13 @@ class Package(CMakePackageBase):
                 debugInfoPath = Path(f"{debugInfoPath}.dSYM")
                 if debugInfoPath.exists():
                     command += ["-g", debugInfoPath]
-
-
-            if CraftCore.compiler.isLinux:
-                command.append(debugInfoPath.parent)
-            elif CraftCore.compiler.isWindows:
-                # the pdb must be located next to the dll
-                command.append(debugInfoPath)
             else:
-                command.append(binaryFile)
-
+                # We use the path to the install prefix as the symbol files need to be located close to the library
+                command.append(debugInfoPath)
 
             tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
             with tmpFile.open("wb") as out:
+                CraftCore.log.info(" ".join([str(x) for x in command]))
                 subprocess.run(command, stdout=out, stderr=subprocess.DEVNULL)
 
             if not tmpFile.stat().st_size:
