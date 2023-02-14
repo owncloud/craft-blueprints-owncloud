@@ -11,7 +11,7 @@ class subinfo(info.infoclass):
             self.targetInstSrc[ver] = f"libappimage-{ver}"
 
         self.targetDigests["1.0.4-5"] = (
-             ["2c4e18860a790c5959da6eb064cbd07f165fe6a9b15989491a3a3f176d06af31"],
+            ["2c4e18860a790c5959da6eb064cbd07f165fe6a9b15989491a3a3f176d06af31"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
@@ -19,6 +19,7 @@ class subinfo(info.infoclass):
 
     def setDependencies(self):
         self.runtimeDependencies["virtual/base"] = None
+
 
 class Package(CMakePackageBase):
     def __init__(self, **args):

@@ -1,8 +1,9 @@
-import info
-import os
-
 import io
+import os
 import re
+
+import info
+
 
 class subinfo(info.infoclass):
     def setTargets(self):
@@ -18,7 +19,9 @@ class subinfo(info.infoclass):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
         self.runtimeDependencies["libs/qt5/qtbase"] = None
 
+
 from Package.CMakePackageBase import *
+
 
 class Package(CMakePackageBase):
     def __init__(self):

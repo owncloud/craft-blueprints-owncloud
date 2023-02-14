@@ -1,8 +1,9 @@
-import info
-import os
-
 import io
+import os
 import re
+
+import info
+
 
 class subinfo(info.infoclass):
     def setTargets(self):
@@ -19,7 +20,9 @@ class subinfo(info.infoclass):
     def setDependencies(self):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
 
+
 from Package.VirtualPackageBase import *
+
 
 class Package(SourceComponentPackageBase):
     def __init__(self):

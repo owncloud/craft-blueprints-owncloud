@@ -1,13 +1,12 @@
-import info
-
 import configparser
-import os
-import io
-import re
-import sys
-import subprocess
 import glob
+import io
+import os
+import re
+import subprocess
+import sys
 
+import info
 from Packager.NullsoftInstallerPackager import NullsoftInstallerPackager
 
 
@@ -21,9 +20,11 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("forceAsserts", False)
 
     def setTargets(self):
-        self.versionInfo.setDefaultValues(tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
-                                          tarballInstallSrc="owncloudclient-${VERSION}",
-                                          gitUrl="[git]https://github.com/owncloud/client")
+        self.versionInfo.setDefaultValues(
+            tarballUrl="https://download.owncloud.com/desktop/stable/owncloudclient-${VERSION}.tar.xz",
+            tarballInstallSrc="owncloudclient-${VERSION}",
+            gitUrl="[git]https://github.com/owncloud/client",
+        )
 
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
@@ -62,8 +63,8 @@ class subinfo(info.infoclass):
             self.buildDependencies["dev-utils/breakpad"] = None
 
 
-
 from Package.CMakePackageBase import *
+
 
 class Package(CMakePackageBase):
     def __init__(self):
@@ -92,7 +93,7 @@ class Package(CMakePackageBase):
 
     @property
     def applicationExecutable(self):
-        return os.environ.get('ApplicationExecutable', 'owncloud')
+        return os.environ.get("ApplicationExecutable", "owncloud")
 
     def fetch(self):
         if self.subinfo.options.dynamic.buildVfsWin:
@@ -111,16 +112,16 @@ class Package(CMakePackageBase):
             return False
         if CraftCore.compiler.isWindows:
             # ensure we can find the sync-exclude.lst
-            configDir = Path(self.installDir()) / "config" / os.environ.get('ApplicationShortname', self.applicationExecutable)
+            configDir = Path(self.installDir()) / "config" / os.environ.get("ApplicationShortname", self.applicationExecutable)
             if not configDir.exists():
-                configDir = Path(self.installDir()) / "etc" / os.environ.get('ApplicationShortname', self.applicationExecutable)
+                configDir = Path(self.installDir()) / "etc" / os.environ.get("ApplicationShortname", self.applicationExecutable)
             if configDir.exists():
                 if not utils.mergeTree(configDir, Path(self.installDir()) / "bin"):
                     return False
         return True
 
     # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
-    def dumpSymbols(self, binaryFiles : [], dest : str) -> bool:
+    def dumpSymbols(self, binaryFiles: [], dest: str) -> bool:
         dest = Path(dest) / "symbols"
         utils.cleanDirectory(dest)
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
@@ -132,17 +133,21 @@ class Package(CMakePackageBase):
         for binaryFile in binaryFiles:
             binaryFile = Path(binaryFile)
             if CraftCore.compiler.isWindows and icuRe.match(binaryFile.name):
-                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because it has no symbols')
+                CraftCore.log.warning(f"dump_symbols: {binaryFile} is blacklisted because it has no symbols")
                 continue
 
-            if CraftCore.compiler.isMacOS and (finderSyncExtRe.match(binaryFile.name) or cmdRe.match(binaryFile.name) or crashReporterRe.match(binaryFile.name)):
-                CraftCore.log.warning(f'dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension, the cmdline client or the crash reporter itself')
+            if CraftCore.compiler.isMacOS and (
+                finderSyncExtRe.match(binaryFile.name) or cmdRe.match(binaryFile.name) or crashReporterRe.match(binaryFile.name)
+            ):
+                CraftCore.log.warning(
+                    f"dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension, the cmdline client or the crash reporter itself"
+                )
                 continue
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
             debugInfoPath = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
-            command = ['dump_syms']
+            command = ["dump_syms"]
             if CraftCore.compiler.isMacOS:
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
                 if bundleDir:
@@ -165,7 +170,7 @@ class Package(CMakePackageBase):
                 continue
 
             with tmpFile.open("rb") as output:
-                firstLine = str(output.readline(), 'utf-8').strip()
+                firstLine = str(output.readline(), "utf-8").strip()
                 CraftCore.log.info(f"Module line: {firstLine}")
 
             if CraftCore.compiler.isWindows:
@@ -174,17 +179,17 @@ class Package(CMakePackageBase):
                     tmpFile.unlink()
                     return False
 
-            CraftCore.log.debug('regex: %s' % moduleRe)
+            CraftCore.log.debug("regex: %s" % moduleRe)
             moduleLine = moduleRe.match(firstLine)
             if not moduleLine:
                 tmpFile.unlink()
                 CraftCore.log.warning("Failed to parse dump_symbols output")
                 return False
-            CraftCore.log.debug('regex: %s' % moduleLine)
+            CraftCore.log.debug("regex: %s" % moduleLine)
             outputPath = dest / moduleLine.group(2) / moduleLine.group(1)
 
             utils.createDir(outputPath)
-            symbolFile = (outputPath / moduleLine.group(2))
+            symbolFile = outputPath / moduleLine.group(2)
             if CraftCore.compiler.isWindows:
                 symbolFile = symbolFile.with_suffix(".sym")
             else:
@@ -192,7 +197,7 @@ class Package(CMakePackageBase):
             if not utils.moveFile(tmpFile, symbolFile):
                 tmpFile.unlink()
                 return False
-            CraftCore.log.info('Writing symbols to: %s' % symbolFile)
+            CraftCore.log.info("Writing symbols to: %s" % symbolFile)
         return True
 
     def owncloudVersion(self):
@@ -228,16 +233,22 @@ class Package(CMakePackageBase):
         return version_str
 
     def createPackage(self):
-        self.blacklist_file.append(os.path.join(self.packageDir(), 'blacklist.txt'))
+        self.blacklist_file.append(os.path.join(self.packageDir(), "blacklist.txt"))
         self.defines["appname"] = self.applicationExecutable
         self.defines["apppath"] = "Applications/KDE/" + self.applicationExecutable + ".app"
         self.defines["company"] = "ownCloud GmbH"
-        self.defines["shortcuts"] = [{"name" : self.subinfo.displayName , "target" : f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}", "description" : self.subinfo.description}]
+        self.defines["shortcuts"] = [
+            {
+                "name": self.subinfo.displayName,
+                "target": f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}",
+                "description": self.subinfo.description,
+            }
+        ]
         self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
         ver = self.owncloudVersion()
         if ver:
-            self.defines["version"] =  ver
+            self.defines["version"] = ver
 
         self.blacklist.append(re.compile(r"bin[/|\\](?!" + self.applicationExecutable + r").*" + re.escape(CraftCore.compiler.executableSuffix)))
 
@@ -246,16 +257,16 @@ class Package(CMakePackageBase):
             self.ignoredPackages += ["libs/dbus"]
 
         if self.subinfo.options.dynamic.enableCrashReporter:
-            sep = '\\%s' % os.sep
+            sep = "\\%s" % os.sep
             regex = r"symbols%s.*" % sep
             self.whitelist.append(re.compile(regex))
         return super().createPackage()
 
     def preArchiveMove(self):
         if self.subinfo.options.dynamic.enableCrashReporter:
-            binaries = utils.filterDirectoryContent(self.archiveDir(),
-                                                whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)),
-                                                blacklist=lambda x, root: True)
+            binaries = utils.filterDirectoryContent(
+                self.archiveDir(), whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)), blacklist=lambda x, root: True
+            )
             if not self.dumpSymbols(binaries, self.archiveDebugDir()):
                 return False
         return super().preArchive()

@@ -22,8 +22,4 @@ class Package(CMakePackageBase):
     def __init__(self, **args):
         CMakePackageBase.__init__(self)
 
-        self.subinfo.options.configure.args += [
-            "-DARGAGG_BUILD_EXAMPLES=OFF",
-            "-DARGAGG_BUILD_TESTS=OFF",
-            "-DARGAGG_BUILD_DOCS=OFF"
-        ]
+        self.subinfo.options.configure.args += ["-DARGAGG_BUILD_EXAMPLES=OFF", "-DARGAGG_BUILD_TESTS=OFF", "-DARGAGG_BUILD_DOCS=OFF"]
