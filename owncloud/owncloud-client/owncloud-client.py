@@ -160,25 +160,30 @@ class Package(CMakePackageBase):
             else:
                 command.append(binaryFile)
 
-            with io.BytesIO() as out:
-                utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
-                outBytes = out.getvalue()
 
-            if not outBytes:
-                CraftCore.log.warning(f"Found no valid output for {binaryFile}: {outBytes}")
+            tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
+            with tmpFile.open("wb") as out:
+                subprocess.run(command, stdout=out, stderr=subprocess.DEVNULL)
+
+            if not tmpFile.stat().st_size:
+                CraftCore.log.warning(f"Found no valid output for {binaryFile}")
+                tmpFile.unlink()
                 continue
 
-            firstLine = str(outBytes.splitlines(1)[0], 'utf-8').strip()
-            CraftCore.log.info(f"Module line: {firstLine}")
+            with tmpFile.open("rb") as output:
+                firstLine = str(output.readline(), 'utf-8').strip()
+                CraftCore.log.info(f"Module line: {firstLine}")
 
             if CraftCore.compiler.isWindows:
                 if firstLine.startswith("loadDataForPdb and loadDataFromExe failed for"):
                     CraftCore.log.warning(f"Module does not contain debug symbols: {binaryFile}")
+                    tmpFile.unlink()
                     return False
 
             CraftCore.log.debug('regex: %s' % moduleRe)
             moduleLine = moduleRe.match(firstLine)
             if not moduleLine:
+                tmpFile.unlink()
                 CraftCore.log.warning("Failed to parse dump_symbols output")
                 return False
             CraftCore.log.debug('regex: %s' % moduleLine)
@@ -190,8 +195,9 @@ class Package(CMakePackageBase):
                 symbolFile = symbolFile.with_suffix(".sym")
             else:
                 symbolFile = f"{symbolFile}.sym"
-            with open(symbolFile, 'wb') as outputFile:
-                outputFile.write(outBytes)
+            if not utils.moveFile(tmpFile, symbolFile):
+                tmpFile.unlink()
+                return False
             CraftCore.log.info('Writing symbols to: %s' % symbolFile)
         return True
 
