@@ -146,18 +146,20 @@ class Package(CMakePackageBase):
 
             CraftCore.log.info(f"Dump symbols for: {binaryFile}")
 
-            debugInfoPath = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
+            # We use the path to the install prefix as the symbol files need to be located close to the library
+            installedBinary = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
+
             command = ["dump_syms"]
             if CraftCore.compiler.isMacOS:
+                debugInfoPath = installedBinary
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
                 if bundleDir:
                     debugInfoPath = bundleDir[-1]
                 debugInfoPath = Path(f"{debugInfoPath}.dSYM")
                 if debugInfoPath.exists():
                     command += ["-g", debugInfoPath]
-            else:
-                # We use the path to the install prefix as the symbol files need to be located close to the library
-                command.append(debugInfoPath)
+
+            command.append(installedBinary)
 
             tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
             with tmpFile.open("wb") as out:
