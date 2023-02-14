@@ -151,9 +151,14 @@ class Package(CMakePackageBase):
                 if debugInfoPath.exists():
                     command += ["-g", debugInfoPath]
 
-            command.append(binaryFile)
+
             if CraftCore.compiler.isLinux:
                 command.append(debugInfoPath.parent)
+            elif CraftCore.compiler.isWindows:
+                # the pdb must be located next to the dll
+                command.append(debugInfoPath)
+            else:
+                command.append(binaryFile)
 
             with io.BytesIO() as out:
                 utils.system(command, stdout=out, stderr=subprocess.DEVNULL)
