@@ -3,6 +3,7 @@ import glob
 import io
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -135,6 +136,8 @@ class Package(CMakePackageBase):
         cmdRe = re.compile(r".*cmd")
         crashReporterRe = re.compile(r".*_crash_reporter")
 
+        dum_syms = shutil.which("dump_syms")
+
         for binaryFile in binaryFiles:
             binaryFile = Path(binaryFile)
             if CraftCore.compiler.isWindows and skipDump.match(binaryFile.name):
@@ -154,7 +157,7 @@ class Package(CMakePackageBase):
             # We use the path to the install prefix as the symbol files need to be located close to the library
             installedBinary = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
 
-            command = ["dump_syms"]
+            command = [dum_syms]
             if CraftCore.compiler.isMacOS:
                 debugInfoPath = installedBinary
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
@@ -164,6 +167,10 @@ class Package(CMakePackageBase):
                 if debugInfoPath.exists():
                     command += ["-g", debugInfoPath]
             command.append(installedBinary)
+
+            if CraftCore.compiler.isLinux:
+                # without providing the path to the dbg file dump_sys won't look for it
+                command.append(installedBinary.parent)
 
             tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
             with tmpFile.open("wb") as out:
