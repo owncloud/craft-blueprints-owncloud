@@ -168,7 +168,7 @@ class Package(CMakePackageBase):
             if not tmpFile.stat().st_size:
                 CraftCore.log.warning(f"Found no valid output for {binaryFile}")
                 tmpFile.unlink()
-                continue
+                return False
 
             with tmpFile.open("rb") as output:
                 firstLine = str(output.readline(), "utf-8").strip()
