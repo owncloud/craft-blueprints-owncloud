@@ -155,10 +155,9 @@ class Package(CMakePackageBase):
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
                 if bundleDir:
                     debugInfoPath = bundleDir[-1]
-                debugInfoPath = Path(f"{debugInfoPath}.dSYM")
+                debugInfoPath = Path(f"{debugInfoPath}.dSYM/Contents/Resources/DWARF/") / installedBinary.name
                 if debugInfoPath.exists():
                     command += ["-g", debugInfoPath]
-
             command.append(installedBinary)
 
             tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
