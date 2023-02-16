@@ -125,7 +125,12 @@ class Package(CMakePackageBase):
         dest = Path(dest) / "symbols"
         utils.cleanDirectory(dest)
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
-        skipDump = re.compile(r"icu\d\d\.dll|asprintf-0\.dll")
+        skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll"
+        if CraftCore.compiler.isWindows:
+            for package in ["libs/runtime", "libs/d3dcompiler", "libs/gettext"]:
+                files = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))[0].getFiles()
+                skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
+        skipDump = re.compile(skipDumpPattern)
         finderSyncExtRe = re.compile(r"FinderSyncExt")
         cmdRe = re.compile(r".*cmd")
         crashReporterRe = re.compile(r".*_crash_reporter")
