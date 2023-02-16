@@ -125,14 +125,14 @@ class Package(CMakePackageBase):
         dest = Path(dest) / "symbols"
         utils.cleanDirectory(dest)
         moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
-        icuRe = re.compile(r"icudt\d\d.dll")
+        skipDump = re.compile(r"icu\d\d\.dll|asprintf-0\.dll")
         finderSyncExtRe = re.compile(r"FinderSyncExt")
         cmdRe = re.compile(r".*cmd")
         crashReporterRe = re.compile(r".*_crash_reporter")
 
         for binaryFile in binaryFiles:
             binaryFile = Path(binaryFile)
-            if CraftCore.compiler.isWindows and icuRe.match(binaryFile.name):
+            if CraftCore.compiler.isWindows and skipDump.match(binaryFile.name):
                 CraftCore.log.warning(f"dump_symbols: {binaryFile} is blacklisted because it has no symbols")
                 continue
 
