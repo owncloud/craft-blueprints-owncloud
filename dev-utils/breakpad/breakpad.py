@@ -87,7 +87,8 @@ elif CraftCore.compiler.isWindows:
         def install(self):
             if not BuildSystemBase.install(self):
                 return False
-            return utils.copyFile(self.sourceDir() / "src/tools/windows/dump_syms/Release/dump_syms.exe", self.installDir() / "bin/dump_syms.exe")
+            dump = glob.glob(str(self.sourceDir() / "src/tools/windows/dump_syms/**/dump_syms.exe"), recursive=True)[0]
+            return utils.copyFile(dump, self.installDir() / "bin/dump_syms.exe")
 
 else:
 
