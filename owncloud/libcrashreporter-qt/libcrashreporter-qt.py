@@ -18,6 +18,8 @@ class subinfo(info.infoclass):
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
         self.runtimeDependencies["libs/qt5/qtbase"] = None
+        if CraftCore.compiler.isLinux:
+            self.buildDependencies["dev-utils/breakpad"] = None
 
 
 from Package.CMakePackageBase import *
