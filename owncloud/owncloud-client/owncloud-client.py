@@ -61,6 +61,7 @@ class subinfo(info.infoclass):
             self.runtimeDependencies["libs/libcloudproviders"] = None
 
         if self.options.dynamic.enableCrashReporter:
+            self.runtimeDependencies["owncloud/libcrashreporter-qt"] = None
             self.buildDependencies["dev-utils/breakpad"] = None
 
 
