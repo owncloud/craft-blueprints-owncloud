@@ -17,6 +17,7 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("buildNumber", "")
         self.options.dynamic.registerOption("enableCrashReporter", False)
         self.options.dynamic.registerOption("enableAppImageUpdater", False)
+        self.options.dynamic.registerOption("enableAutoUpdater", False)
         self.options.dynamic.registerOption("enableLibcloudproviders", False)
         self.options.dynamic.registerOption("forceAsserts", False)
 
@@ -84,6 +85,8 @@ class Package(CMakePackageBase):
             self.subinfo.options.configure.args += [f"-DVIRTUAL_FILE_SYSTEM_PLUGINS=off;suffix;{self.win_vfs_plugin.instance.sourceDir()}"]
         if self.subinfo.options.dynamic.enableCrashReporter:
             self.subinfo.options.configure.args += ["-DWITH_CRASHREPORTER=ON"]
+        if self.subinfo.options.dynamic.enableAutoUpdater:
+            self.subinfo.options.configure.args += ["-DWITH_AUTO_UPDATER=ON"]
         if self.subinfo.options.dynamic.enableAppImageUpdater:
             self.subinfo.options.configure.args += ["-DWITH_APPIMAGEUPDATER=ON"]
         if self.subinfo.options.dynamic.enableLibcloudproviders:
