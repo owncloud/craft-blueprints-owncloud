@@ -64,6 +64,7 @@ class subinfo(info.infoclass):
         if self.options.dynamic.enableCrashReporter:
             self.runtimeDependencies["owncloud/libcrashreporter-qt"] = None
             self.buildDependencies["dev-utils/breakpad"] = None
+            self.buildDependencies["dev-utils/symsorter"] = None
 
 
 from Package.CMakePackageBase import *
@@ -125,96 +126,53 @@ class Package(CMakePackageBase):
                     return False
         return True
 
-    # Loosely based on https://chromium.googlesource.com/chromium/chromium/+/34599b0bf7a14ab21a04483c46ecd9b5eaf86704/components/breakpad/tools/generate_breakpad_symbols.py#92
-    def dumpSymbols(self, binaryFiles: [], dest: str) -> bool:
-        dest = Path(dest) / "symbols"
+    def dumpSymbols(self) -> bool:
+        dest = self.archiveDebugDir() / "symbols"
         utils.cleanDirectory(dest)
-        moduleRe = re.compile("^MODULE [^ ]+ [^ ]+ ([0-9aA-fF]+) (.*)")
-        skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll"
+        allowError = None
         if CraftCore.compiler.isWindows:
-            for package in ["libs/runtime", "libs/d3dcompiler", "libs/gettext"]:
-                files = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))[0].getFiles()
-                skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
-        skipDump = re.compile(skipDumpPattern)
-        finderSyncExtRe = re.compile(r"FinderSyncExt")
-        cmdRe = re.compile(r".*cmd")
-        crashReporterRe = re.compile(r".*_crash_reporter")
+            skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll"
+            if CraftCore.compiler.isWindows:
+                for package in ["libs/runtime", "libs/d3dcompiler", "libs/gettext"]:
+                    files = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))[0].getFiles()
+                    skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
+            allowError = re.compile(skipDumpPattern)
 
-        dum_syms = shutil.which("dump_syms")
-
-        for binaryFile in binaryFiles:
+        for binaryFile in utils.filterDirectoryContent(
+            self.archiveDir(), whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)), blacklist=lambda x, root: True
+        ):
             binaryFile = Path(binaryFile)
-            if CraftCore.compiler.isWindows and skipDump.match(binaryFile.name):
-                CraftCore.log.warning(f"dump_symbols: {binaryFile} is blacklisted because it has no symbols")
-                continue
-
-            if CraftCore.compiler.isMacOS and (
-                finderSyncExtRe.match(binaryFile.name) or cmdRe.match(binaryFile.name) or crashReporterRe.match(binaryFile.name)
-            ):
-                CraftCore.log.warning(
-                    f"dump_symbols: {binaryFile} is blacklisted because we have no crash reporter for the finder extension, the cmdline client or the crash reporter itself"
-                )
-                continue
-
-            CraftCore.log.info(f"Dump symbols for: {binaryFile}")
-
-            # We use the path to the install prefix as the symbol files need to be located close to the library
+            # Assume all files are installed and the symbols are located next to the binary
             installedBinary = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
+            if not installedBinary.exists():
+                CraftCore.log.warning(f"{installedBinary} does not exist")
+                return False
 
-            command = [dum_syms]
-            if CraftCore.compiler.isMacOS:
+            if CraftCore.compiler.isWindows:
+                symbolFile = Path(f"{installedBinary}.pdb")
+                if not symbolFile.exists():
+                    pdb = utils.getPDBForBinary(installedBinary)
+                    if pdb:
+                        symbolFile = installedBinary.parent / utils.getPDBForBinary(installedBinary).name
+            elif CraftCore.compiler.isMacOS:
                 debugInfoPath = installedBinary
                 bundleDir = list(filter(lambda x: x.name.endswith(".framework") or x.name.endswith(".app"), debugInfoPath.parents))
                 if bundleDir:
                     debugInfoPath = bundleDir[-1]
                 debugInfoPath = Path(f"{debugInfoPath}.dSYM/Contents/Resources/DWARF/") / installedBinary.name
                 if debugInfoPath.exists():
-                    command += ["-g", debugInfoPath]
-            command.append(installedBinary)
+                    symbolFile = debugInfoPath
+            elif CraftCore.compiler.isUnix:
+                symbolFile = Path(f"{installedBinary}.debug")
 
-            if CraftCore.compiler.isLinux:
-                # without providing the path to the dbg file dump_sys won't look for it
-                command.append(installedBinary.parent)
-
-            tmpFile = (dest / binaryFile.name).with_suffix(".tmp")
-            with tmpFile.open("wb") as out:
-                CraftCore.log.info(" ".join([str(x) for x in command]))
-                subprocess.run(command, stdout=out, stderr=subprocess.DEVNULL)
-
-            if not tmpFile.stat().st_size:
-                CraftCore.log.warning(f"Found no valid output for {binaryFile}")
-                tmpFile.unlink()
+            if not symbolFile.exists():
+                if allowError.match(binaryFile.name):
+                    # ignore errors in files matching allowError
+                    continue
+                CraftCore.log.warning(f"{symbolFile} does not exist")
                 return False
-
-            with tmpFile.open("rb") as output:
-                firstLine = str(output.readline(), "utf-8").strip()
-                CraftCore.log.info(f"Module line: {firstLine}")
-
-            if CraftCore.compiler.isWindows:
-                if firstLine.startswith("loadDataForPdb and loadDataFromExe failed for"):
-                    CraftCore.log.warning(f"Module does not contain debug symbols: {binaryFile}")
-                    tmpFile.unlink()
-                    return False
-
-            CraftCore.log.debug("regex: %s" % moduleRe)
-            moduleLine = moduleRe.match(firstLine)
-            if not moduleLine:
-                tmpFile.unlink()
-                CraftCore.log.warning("Failed to parse dump_symbols output")
+            if not utils.system(["symsorter", "--compress", "--compress", "--output", dest, symbolFile]):
                 return False
-            CraftCore.log.debug("regex: %s" % moduleLine)
-            outputPath = dest / moduleLine.group(2) / moduleLine.group(1)
-
-            utils.createDir(outputPath)
-            symbolFile = outputPath / moduleLine.group(2)
-            if CraftCore.compiler.isWindows:
-                symbolFile = symbolFile.with_suffix(".sym")
-            else:
-                symbolFile = f"{symbolFile}.sym"
-            if not utils.moveFile(tmpFile, symbolFile):
-                tmpFile.unlink()
-                return False
-            CraftCore.log.info("Writing symbols to: %s" % symbolFile)
         return True
 
     def owncloudVersion(self):
@@ -281,9 +239,6 @@ class Package(CMakePackageBase):
 
     def preArchiveMove(self):
         if self.subinfo.options.dynamic.enableCrashReporter:
-            binaries = utils.filterDirectoryContent(
-                self.archiveDir(), whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)), blacklist=lambda x, root: True
-            )
-            if not self.dumpSymbols(binaries, self.archiveDebugDir()):
+            if not self.dumpSymbols():
                 return False
         return super().preArchive()
