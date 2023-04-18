@@ -2,10 +2,14 @@ import os
 import shutil
 
 import info
+from CraftCore import CraftCore
 from Package.SourceOnlyPackageBase import SourceOnlyPackageBase
 
 
 class subinfo(info.infoclass):
+    def registerOptions(self):
+        self.parent.package.categoryInfo.platforms = CraftCore.compiler.Platforms.Linux
+
     def setTargets(self):
         self.svnTargets["master"] = "https://chromium.googlesource.com/chromium/tools/depot_tools.git|main|"
 
