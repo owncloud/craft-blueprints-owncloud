@@ -143,6 +143,7 @@ class Package(CMakePackageBase):
         ):
             binaryFile = Path(binaryFile)
             # Assume all files are installed and the symbols are located next to the binary
+            # TODO:
             installedBinary = CraftCore.standardDirs.craftRoot() / binaryFile.relative_to(self.archiveDir())
             if not installedBinary.exists():
                 CraftCore.log.warning(f"{installedBinary} does not exist")
@@ -171,7 +172,7 @@ class Package(CMakePackageBase):
                     continue
                 CraftCore.log.warning(f"{symbolFile} does not exist")
                 return False
-            if not utils.system(["symsorter", "--compress", "--compress", "--output", dest, symbolFile]):
+            if not utils.system(["symsorter", "--compress", "--compress", "--output", dest, installedBinary, symbolFile]):
                 return False
         return True
 
