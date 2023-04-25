@@ -49,6 +49,8 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
 
+        self.runtimeDependencies["libs/kdsingleapplication"] = None
+
         if CraftCore.compiler.isLinux:
             self.runtimeDependencies["libs/qt5/qtwayland"] = None
 
