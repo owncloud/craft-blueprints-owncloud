@@ -20,6 +20,7 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("enableAutoUpdater", False)
         self.options.dynamic.registerOption("enableLibcloudproviders", False)
         self.options.dynamic.registerOption("forceAsserts", False)
+        self.options.dynamic.registerOption("buildWithQt6", False)
 
     def setTargets(self):
         self.versionInfo.setDefaultValues(
@@ -41,18 +42,23 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/sparkle"] = None
         self.runtimeDependencies["libs/zlib"] = None
         self.runtimeDependencies["libs/sqlite"] = None
-        self.runtimeDependencies["libs/qt5/qtbase"] = None
-        self.runtimeDependencies["libs/qt5/qtmacextras"] = None
-        self.runtimeDependencies["libs/qt5/qtwinextras"] = None
-        self.runtimeDependencies["libs/qt5/qttranslations"] = None
-        self.runtimeDependencies["libs/qt5/qtsvg"] = None
-        self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
+
+        if not self.options.dynamic.buildWithQt6:
+            self.runtimeDependencies["libs/qt5/qtbase"] = None
+            self.runtimeDependencies["libs/qt5/qtmacextras"] = None
+            self.runtimeDependencies["libs/qt5/qtwinextras"] = None
+            self.runtimeDependencies["libs/qt5/qttranslations"] = None
+            self.runtimeDependencies["libs/qt5/qtsvg"] = None
+            self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
+            if CraftCore.compiler.isLinux:
+                self.runtimeDependencies["libs/qt5/qtwayland"] = None
+        else:
+            self.runtimeDependencies["libs/qt6/qtbase"] = None
+            self.runtimeDependencies["libs/qt6/qtsvg"] = None
+            self.runtimeDependencies["libs/qt6/qtimageformats"] = None
+
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
-
         self.runtimeDependencies["libs/kdsingleapplication"] = None
-
-        if CraftCore.compiler.isLinux:
-            self.runtimeDependencies["libs/qt5/qtwayland"] = None
 
         if self.options.dynamic.buildVfsWin:
             self.runtimeDependencies["owncloud/client-desktop-vfs-win"] = None
