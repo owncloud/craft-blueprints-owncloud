@@ -12,7 +12,7 @@ class subinfo(info.infoclass):
             self.targetConfigurePath[ver] = "client"
             self.defaultTarget = ver
 
-        self.svnTargets["main"] = f"https://github.com/owncloud/libre-graph-api-cpp-qt-client.git"
+        self.svnTargets["main"] = f"https://github.com/owncloud/libre-graph-api-cpp-qt-client.git|main|"
         self.targetConfigurePath["main"] = "client"
 
         self.description = "Libre Graph Cloud Collaboration API - Qt bindings"
