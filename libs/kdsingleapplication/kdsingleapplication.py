@@ -13,6 +13,9 @@ class subinfo(info.infoclass):
         self.svnTargets["master"] = "https://github.com/KDAB/KDSingleApplication.git"
         self.defaultTarget = "master"
 
+        self.patchToApply["master"] = [("5.patch", 1)]
+        self.patchLevel["master"] = 1
+
         self.description = "KDSingleApplication is a helper class for single-instance policy applications written by KDAB."
         self.webpage = "https://github.com/KDAB/KDSingleApplication"
 
