@@ -21,7 +21,10 @@ class subinfo(info.infoclass):
 
     def setDependencies(self):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
-        self.runtimeDependencies["libs/qt5/qtbase"] = None
+        if not self.options.dynamic.buildWithQt6:
+            self.runtimeDependencies["libs/qt5/qtbase"] = None
+        else:
+            self.runtimeDependencies["libs/qt6/qtbase"] = None
 
 
 from Package.CMakePackageBase import *
