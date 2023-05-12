@@ -12,6 +12,7 @@ import info
 class subinfo(info.infoclass):
     def setTargets(self):
         self.svnTargets["master"] = "https://github.com/dschmidt/libcrashreporter-qt.git"
+        self.patchLevel["master"] = 1
         self.defaultTarget = "master"
 
     def setDependencies(self):
