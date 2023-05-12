@@ -31,7 +31,7 @@ class Package(CMakePackageBase):
         self.subinfo.options.configure.args += [
             "-DUSE_SYSTEM_ZSYNC2=ON",
             "-DUSE_SYSTEM_LIBAPPIMAGE=ON",
-            "-DBUILD_QT_UI=ON",
+            "-DBUILD_QT_UI=OFF",
             "-DBUILD_TESTING=OFF",
             "-DBUILD_LIBAPPIMAGEUPDATE_ONLY=ON",
         ]
