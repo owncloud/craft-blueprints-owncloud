@@ -147,7 +147,7 @@ class Package(CMakePackageBase):
             allowError = re.compile(skipDumpPattern)
         elif CraftCore.compiler.isMacOS:
             # libs/qt6/qtbase installs .o files on mac...
-            allowError = re.compile(".*\.o")
+            allowError = re.compile(r".*\.o")
 
 
         for binaryFile in utils.filterDirectoryContent(
