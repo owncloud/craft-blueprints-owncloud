@@ -145,6 +145,10 @@ class Package(CMakePackageBase):
                     files = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))[0].getFiles()
                     skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
             allowError = re.compile(skipDumpPattern)
+        elif CraftCore.compiler.isMacOS:
+            # libs/qt6/qtbase installs .o files on mac...
+            allowError = re.compile(".*\.o")
+
 
         for binaryFile in utils.filterDirectoryContent(
             self.archiveDir(), whitelist=lambda x, root: utils.isBinary(os.path.join(root, x)), blacklist=lambda x, root: True
