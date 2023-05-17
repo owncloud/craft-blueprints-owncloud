@@ -182,12 +182,16 @@ class Package(CMakePackageBase):
                 symbolFile = Path(f"{installedBinary}.debug")
 
             if not symbolFile.exists():
-                if allowError.match(binaryFile.name):
+                if allowError and allowError.match(binaryFile.name):
                     # ignore errors in files matching allowError
                     continue
                 CraftCore.log.warning(f"{symbolFile} does not exist")
                 return False
             if not utils.system(["symsorter", "--compress", "--compress", "--output", dest, installedBinary, symbolFile]):
+                if allowError and allowError.match(binaryFile.name):
+                    # ignore errors in files matching allowError
+                    CraftCore.log.warning(f"Ignoring error for {binaryFile.name}")
+                    continue
                 return False
         return True
 
