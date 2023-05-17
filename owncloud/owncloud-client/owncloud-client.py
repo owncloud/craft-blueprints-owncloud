@@ -56,6 +56,7 @@ class subinfo(info.infoclass):
             self.runtimeDependencies["libs/qt6/qtbase"] = None
             self.runtimeDependencies["libs/qt6/qtsvg"] = None
             self.runtimeDependencies["libs/qt6/qtimageformats"] = None
+            self.runtimeDependencies["libs/qt6/qtranslations"] = None
 
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
         self.runtimeDependencies["libs/kdsingleapplication"] = None
