@@ -142,8 +142,10 @@ class Package(CMakePackageBase):
             skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll"
             if CraftCore.compiler.isWindows:
                 for package in ["libs/runtime", "libs/d3dcompiler", "libs/gettext"]:
-                    files = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))[0].getFiles()
-                    skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
+                    dbPackage = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))
+                    if dbPackage:
+                        files = dbPackage[0].getFiles()
+                        skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
             allowError = re.compile(skipDumpPattern)
         elif CraftCore.compiler.isMacOS:
             # libs/qt6/qtbase installs .o files on mac...
