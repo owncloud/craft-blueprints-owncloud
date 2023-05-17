@@ -245,7 +245,7 @@ class Package(CMakePackageBase):
         if ver:
             self.defines["version"] = ver
 
-        self.addExecutableFilter(r"[bin|libexec]/(?!(" + self.applicationExecutable + r")).*")
+        self.addExecutableFilter(r"(bin|libexec)/(?!(" + self.applicationExecutable + r")).*")
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
