@@ -46,12 +46,13 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt/qttranslations"] = None
         self.runtimeDependencies["libs/qt/qtsvg"] = None
         self.runtimeDependencies["libs/qt/qtimageformats"] = None
+        if CraftCore.compiler.isLinux:
+            self.runtimeDependencies["libs/qt/qtwayland"] = None
+
         if CraftPackageObject.get("libs/qt").instance.subinfo.options.dynamic.qtMajorVersion == "5":
             self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
             self.runtimeDependencies["libs/qt5/qtmacextras"] = None
             self.runtimeDependencies["libs/qt5/qtwinextras"] = None
-            if CraftCore.compiler.isLinux:
-                self.runtimeDependencies["libs/qt5/qtwayland"] = None
 
         self.runtimeDependencies["qt-libs/qtkeychain"] = None
         self.runtimeDependencies["libs/kdsingleapplication"] = None
