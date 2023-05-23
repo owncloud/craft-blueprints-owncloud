@@ -6,9 +6,6 @@ import info
 
 
 class subinfo(info.infoclass):
-    def registerOptions(self):
-        self.options.dynamic.registerOption("buildWithQt6", False)
-
     def setTargets(self):
         for ver in ["v0.11.0", "v0.12.0", "v0.13.2", "v1.0.1"]:
             self.svnTargets[ver] = f"https://github.com/owncloud/libre-graph-api-cpp-qt-client.git||{ver}"
@@ -30,10 +27,7 @@ class subinfo(info.infoclass):
 
     def setDependencies(self):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
-        if not self.options.dynamic.buildWithQt6:
-            self.runtimeDependencies["libs/qt5/qtbase"] = None
-        else:
-            self.runtimeDependencies["libs/qt6/qtbase"] = None
+        self.runtimeDependencies["libs/qt/qtbase"] = None
 
 
 from Package.CMakePackageBase import *

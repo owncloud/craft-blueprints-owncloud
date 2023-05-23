@@ -21,7 +21,7 @@ class subinfo(info.infoclass):
 
         # actually a runtime dep but for now we only wan't to deploy the binary
         self.buildDependencies["owncloud/owncloud-client"] = None
-        self.runtimeDependencies["libs/qt5/qtbase"] = None
+        self.runtimeDependencies["libs/qt/qtbase"] = None
 
 
 from Package.CMakePackageBase import *

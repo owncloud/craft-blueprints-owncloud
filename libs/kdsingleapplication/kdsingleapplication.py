@@ -6,9 +6,6 @@ import info
 
 
 class subinfo(info.infoclass):
-    def registerOptions(self):
-        self.options.dynamic.registerOption("buildWithQt6", False)
-
     def setTargets(self):
         self.svnTargets["master"] = "https://github.com/KDAB/KDSingleApplication.git"
         self.defaultTarget = "master"
@@ -21,10 +18,7 @@ class subinfo(info.infoclass):
 
     def setDependencies(self):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
-        if not self.options.dynamic.buildWithQt6:
-            self.runtimeDependencies["libs/qt5/qtbase"] = None
-        else:
-            self.runtimeDependencies["libs/qt6/qtbase"] = None
+        self.runtimeDependencies["libs/qt/qtbase"] = None
 
 
 from Package.CMakePackageBase import *
@@ -33,5 +27,5 @@ from Package.CMakePackageBase import *
 class Package(CMakePackageBase):
     def __init__(self):
         CMakePackageBase.__init__(self)
-        if self.subinfo.options.dynamic.buildWithQt6:
+        if CraftPackageObject.get("libs/qt").instance.subinfo.options.dynamic.qtMajorVersion == "6":
             self.subinfo.options.configure.args += ["-DKDSingleApplication_QT6=ON"]

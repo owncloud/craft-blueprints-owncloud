@@ -20,7 +20,7 @@ class subinfo(info.infoclass):
         self.defaultTarget = "2.0.0-alpha-1-20220512"
 
     def setDependencies(self):
-        self.runtimeDependencies["libs/qt5/qtbase"] = None
+        self.runtimeDependencies["libs/qt/qtbase"] = None
         self.runtimeDependencies["libs/zsync2"] = None
         self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
