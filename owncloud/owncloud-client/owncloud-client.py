@@ -239,8 +239,8 @@ class Package(CMakePackageBase):
                 "description": self.subinfo.description,
             }
         ]
-        self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
-        self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
+        self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
+        self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
