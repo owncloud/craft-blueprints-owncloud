@@ -249,11 +249,6 @@ class Package(CMakePackageBase):
         self.ignoredPackages += ["binary/mysql"]
         if not CraftCore.compiler.isLinux:
             self.ignoredPackages += ["libs/dbus"]
-
-        if self.subinfo.options.dynamic.enableCrashReporter:
-            sep = "\\%s" % os.sep
-            regex = r"symbols%s.*" % sep
-            self.whitelist.append(re.compile(regex))
         return super().createPackage()
 
     def preArchiveMove(self):
