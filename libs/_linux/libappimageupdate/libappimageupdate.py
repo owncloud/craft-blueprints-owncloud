@@ -6,6 +6,8 @@ class subinfo(info.infoclass):
     def setTargets(self):
         self.description = "AppImageUpdate lets you update AppImages in a decentral way using information embedded in the AppImage itself."
 
+        self.svnTargets["master"] = "https://github.com/AppImageCommunity/AppImageUpdate.git|main|"
+
         for ver in ["2.0.0-alpha-1-20220512"]:
             self.targets[ver] = f"https://github.com/AppImage/AppImageUpdate/archive/refs/tags/{ver}.tar.gz"
             self.targetInstSrc[ver] = f"AppImageUpdate-{ver}"
