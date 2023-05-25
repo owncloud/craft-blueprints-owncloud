@@ -8,23 +8,22 @@ class subinfo(info.infoclass):
 
         self.svnTargets["master"] = "https://github.com/AppImageCommunity/AppImageUpdate.git|main|"
 
-        for ver in ["2.0.0-alpha-1-20220512"]:
+        for ver in ["2.0.0-alpha-1-20230525"]:
             self.targets[ver] = f"https://github.com/AppImage/AppImageUpdate/archive/refs/tags/{ver}.tar.gz"
             self.targetInstSrc[ver] = f"AppImageUpdate-{ver}"
 
-        self.targetDigests["2.0.0-alpha-1-20220512"] = (
-            ["adbfbb49b6a0ee945ed3cac1909ba9f52173416181aacd7ee1faef844b0c2240"],
+        self.targetDigests["2.0.0-alpha-1-20230525"] = (
+            ["b6a9d2c231df7515244e260931e159ffdde62f0c4602bcb212e65ba270ed1143"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
-        self.defaultTarget = "2.0.0-alpha-1-20220512"
+        self.defaultTarget = "2.0.0-alpha-1-20230525"
 
     def setDependencies(self):
-        self.runtimeDependencies["libs/qt/qtbase"] = None
         self.runtimeDependencies["libs/zsync2"] = None
         self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
-
+        self.runtimeDependencies["libs/libgcrypt"] = None
 
 class Package(CMakePackageBase):
     def __init__(self, **args):
