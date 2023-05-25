@@ -24,6 +24,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
         self.runtimeDependencies["libs/libgcrypt"] = None
+        self.runtimeDependencies["libs/nlohmann-json"] = None
 
 class Package(CMakePackageBase):
     def __init__(self, **args):
