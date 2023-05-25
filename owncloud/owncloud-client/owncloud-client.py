@@ -41,6 +41,8 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/sparkle"] = None
         self.runtimeDependencies["libs/zlib"] = None
         self.runtimeDependencies["libs/sqlite"] = None
+        if CraftCore.compiler.isWindows:
+            self.buildDependencies["libs/nlohmann-json"] = None
 
         self.runtimeDependencies["libs/qt/qtbase"] = None
         self.runtimeDependencies["libs/qt/qttranslations"] = None
