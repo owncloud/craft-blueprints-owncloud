@@ -146,8 +146,17 @@ class Package(CMakePackageBase):
                         files = dbPackage[0].getFiles()
                         skipDumpPattern += "|" + "|".join([re.escape(Path(x[0]).name) for x in files])
             allowError = re.compile(skipDumpPattern)
-        elif CraftCore.compiler.isMacOS:
-            # libs/qt6/qtbase installs .o files on mac...
+        else:
+            # libs/qt6/qtbase installs .o files...
+            # executing command: /drone/src/linux-64-gcc/dev-utils/bin/symsorter --compress --compress --output /drone/src/linux-64-gcc/build/owncloud/owncloud-client/archive-dbg/symbols /drone/src/linux-64-gcc/qml/Qt/test/controls/objects-RelWithDebInfo/QuickControlsTestUtilsPrivate_resources_1/.rcc/qrc_qmake_Qt_test_controls.cpp.o /drone/src/linux-64-gcc/qml/Qt/test/controls/objects-RelWithDebInfo/QuickControlsTestUtilsPrivate_resources_1/.rcc/qrc_qmake_Qt_test_controls.cpp.o.debug
+            #
+            # Sorting debug information files
+            #
+            # qrc_qmake_Qt_test_controls.cpp.o (rel, x86_64) -> /drone/src/linux-64-gcc/build/owncloud/owncloud-client/archive-dbg/symbols/00/0000e90000000000000000009f79900/executable
+            #
+            # error: failed to process file qrc_qmake_Qt_test_controls.cpp.o.debug
+            #
+            #   caused by failed to generate debug identifier
             allowError = re.compile(r".*\.o")
 
 
