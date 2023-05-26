@@ -8,16 +8,16 @@ class subinfo(info.infoclass):
 
         self.svnTargets["master"] = "https://github.com/AppImageCommunity/AppImageUpdate.git|main|"
 
-        for ver in ["2.0.0-alpha-1-20230525"]:
+        for ver in ["2.0.0-alpha-1-20230526"]:
             self.targets[ver] = f"https://github.com/AppImage/AppImageUpdate/archive/refs/tags/{ver}.tar.gz"
             self.targetInstSrc[ver] = f"AppImageUpdate-{ver}"
 
-        self.targetDigests["2.0.0-alpha-1-20230525"] = (
-            ["b6a9d2c231df7515244e260931e159ffdde62f0c4602bcb212e65ba270ed1143"],
+        self.targetDigests["2.0.0-alpha-1-20230526"] = (
+            ["2cc5506b1be9d178c2ca00a59dd778cb5b74a7db705334803d9d57f4b41943b0"],
             CraftHash.HashAlgorithm.SHA256,
         )
 
-        self.defaultTarget = "2.0.0-alpha-1-20230525"
+        self.defaultTarget = "2.0.0-alpha-1-20230526"
 
     def setDependencies(self):
         self.runtimeDependencies["libs/zsync2"] = None
