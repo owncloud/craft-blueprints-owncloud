@@ -248,6 +248,7 @@ class Package(CMakePackageBase):
         ]
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
+        self.definesπ["appimage_apprun"] = self.packageDir() / "apprun.sh"
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
