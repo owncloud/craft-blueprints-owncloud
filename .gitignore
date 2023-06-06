@@ -6,3 +6,5 @@ __pycache__/
 
 # editor backups
 *.*swp*
+
+AppRun.sh
