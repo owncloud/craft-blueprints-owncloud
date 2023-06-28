@@ -11,10 +11,11 @@ class subinfo(info.infoclass):
         self.parent.package.categoryInfo.platforms = CraftCore.compiler.Platforms.Linux
 
     def setTargets(self):
-        self.svnTargets["master"] = "https://chromium.googlesource.com/chromium/tools/depot_tools.git|main|"
+        for ver in ["chrome/4147", "main"]:
+            self.svnTargets[ver] = f"https://chromium.googlesource.com/chromium/tools/depot_tools.git|{ver}|"
 
         self.webpage = "https://dev.chromium.org/developers/how-tos/depottools"
-        self.defaultTarget = "master"
+        self.defaultTarget = "chrome/4147"
 
     def setDependencies(self):
         self.buildDependencies["dev-utils/python3"] = None
