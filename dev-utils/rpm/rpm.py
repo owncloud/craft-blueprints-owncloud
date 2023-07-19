@@ -31,7 +31,3 @@ class Package(AutoToolsPackageBase):
         AutoToolsPackageBase.__init__(self)
 
         self.subinfo.options.configure.autoreconf = False
-
-    def compile(self):
-        with utils.ScopedEnv(env):
-            return super().compile()
