@@ -22,6 +22,8 @@ class subinfo(info.infoclass):
         self.buildDependencies["virtual/base"] = None
         self.buildDependencies["libs/nss"] = None
         self.buildDependencies["libs/lua"] = None
+        self.buildDependencies["libs/libgcrypt"] = None
+        self.buildDependencies["libs/gpg-error"] = None
 
 
 class Package(AutoToolsPackageBase):
@@ -31,8 +33,5 @@ class Package(AutoToolsPackageBase):
         self.subinfo.options.configure.autoreconf = False
 
     def compile(self):
-        env = {
-            "LDFLAGS": "-Wl,--copy-dt-needed-entries",
-        }
         with utils.ScopedEnv(env):
             return super().compile()
