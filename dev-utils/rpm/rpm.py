@@ -33,10 +33,5 @@ class Package(AutoToolsPackageBase):
     def __init__(self, **args):
         AutoToolsPackageBase.__init__(self)
         self.subinfo.options.configure.args += ["--with-crypto=libgcrypt", "--disable-static", "--enable-shared"]
-
-    def compile(self):
-        env = {
-            "LDFLAGS": "-Wl,--copy-dt-needed-entries",
-        }
-        with utils.ScopedEnv(env):
-            return super().compile()
+        # on centos it does not automagically link intl so make it explicit
+        self.subinfo.options.configure.ldflags += " -lintl"
