@@ -21,6 +21,9 @@ class subinfo(info.infoclass):
     def setDependencies(self):
         self.buildDependencies["virtual/base"] = None
         self.buildDependencies["libs/nss"] = None
+        self.buildDependencies["libs/libarchive"] = None
+        self.buildDependencies["libs/zlib"] = None
+        self.buildDependencies["libs/libbzip2"] = None
         self.buildDependencies["libs/lua"] = None
         self.buildDependencies["libs/libgcrypt"] = None
         self.buildDependencies["libs/gpg-error"] = None
@@ -29,5 +32,11 @@ class subinfo(info.infoclass):
 class Package(AutoToolsPackageBase):
     def __init__(self, **args):
         AutoToolsPackageBase.__init__(self)
+        self.subinfo.options.configure.args += ["--with-crypto=libgcrypt", "--disable-static", "--enable-shared"]
 
-        self.subinfo.options.configure.autoreconf = False
+    def compile(self):
+        env = {
+            "LDFLAGS": "-Wl,--copy-dt-needed-entries",
+        }
+        with utils.ScopedEnv(env):
+            return super().compile()
