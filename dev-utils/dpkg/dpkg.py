@@ -21,7 +21,7 @@ class subinfo(info.infoclass):
 
         self.defaultTarget = "1.21.22"
 
-        self.patchToApply["1.21.22"] = [("dpkg-1.21.22-20230721.diff", 1)]
+        self.patchToApply["1.21.22"] = [("dpkg-1.21.22-20230721.diff", 1), ("dpkg-1.21.22-20230726.diff", 1)]
 
     def setDependencies(self):
         self.buildDependencies["virtual/base"] = None
