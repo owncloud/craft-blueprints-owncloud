@@ -17,17 +17,15 @@ class subinfo(info.infoclass):
         self.targetDigests["0.13.1+nmu4"] = (["7c33d26c371f67e3a0aa658bb925336e8584d43fef9938e16da8da6272f47bc3"], CraftHash.HashAlgorithm.SHA256)
 
         self.defaultTarget = "0.13.1+nmu4"
+        self.targetInstallPath["0.13.1+nmu4"] = "bin"
+
+        self.patchToApply["0.13.1+nmu4"] = [("dpkg-sig-0.13.1+nmu4-20230803.diff", 1)]
 
     def setDependencies(self):
-        self.buildDependencies["dev-utils/perl"] = None
+        self.runtimeDependencies["dev-utils/perl"] = None
+        self.runtimeDependencies["perl-modules/config-file"] = None
 
 
 class Package(BinaryPackageBase):
     def __init__(self):
         BinaryPackageBase.__init__(self)
-
-    def install(self):
-        if not super().install():
-            return False
-
-        return utils.createShim(os.path.join(self.imageDir(), "bin", "dpkg-sig"), os.path.join(self.imageDir(), "dpkg-sig"))
