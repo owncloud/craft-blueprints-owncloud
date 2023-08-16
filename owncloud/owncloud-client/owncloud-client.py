@@ -237,6 +237,7 @@ class Package(CMakePackageBase):
     def createPackage(self):
         self.blacklist_file.append(os.path.join(self.packageDir(), "blacklist.txt"))
         self.defines["appname"] = self.applicationExecutable
+        self.defines["appimage_native_package_name"] = f'{self.defines["appname"]}-client'
         self.defines["apppath"] = "Applications/KDE/" + self.applicationExecutable + ".app"
         self.defines["company"] = "ownCloud GmbH"
         self.defines["shortcuts"] = [
