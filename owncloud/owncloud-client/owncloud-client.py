@@ -18,7 +18,6 @@ class subinfo(info.infoclass):
         self.options.dynamic.registerOption("enableCrashReporter", False)
         self.options.dynamic.registerOption("enableAppImageUpdater", False)
         self.options.dynamic.registerOption("enableAutoUpdater", False)
-        self.options.dynamic.registerOption("enableLibcloudproviders", False)
         self.options.dynamic.registerOption("forceAsserts", False)
 
     def setTargets(self):
@@ -66,9 +65,6 @@ class subinfo(info.infoclass):
         if self.options.dynamic.enableAppImageUpdater:
             self.runtimeDependencies["libs/libappimageupdate"] = None
 
-        if self.options.dynamic.enableLibcloudproviders:
-            self.runtimeDependencies["libs/libcloudproviders"] = None
-
         if self.options.dynamic.enableCrashReporter:
             self.runtimeDependencies["owncloud/libcrashreporter-qt"] = None
             self.buildDependencies["dev-utils/breakpad"] = None
@@ -98,8 +94,6 @@ class Package(CMakePackageBase):
             self.subinfo.options.configure.args += ["-DWITH_AUTO_UPDATER=ON"]
         if self.subinfo.options.dynamic.enableAppImageUpdater:
             self.subinfo.options.configure.args += ["-DWITH_APPIMAGEUPDATER=ON"]
-        if self.subinfo.options.dynamic.enableLibcloudproviders:
-            self.subinfo.options.configure.args += ["-DWITH_LIBCLOUDPROVIDERS=ON"]
         if self.subinfo.options.dynamic.forceAsserts:
             self.subinfo.options.configure.args += ["-DFORCE_ASSERTS=ON"]
         if self.subinfo.options.dynamic.buildNumber:
