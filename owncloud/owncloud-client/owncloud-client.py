@@ -99,9 +99,29 @@ class Package(CMakePackageBase):
         if self.subinfo.options.dynamic.buildNumber:
             self.subinfo.options.configure.args += [f"-DMIRALL_VERSION_BUILD={self.subinfo.options.dynamic.buildNumber}"]
 
+    @staticmethod
+    def _get_env_vars(*names, fallback=None):
+        for name in names:
+            try:
+                value = os.environ[name]
+
+            except KeyError:
+                continue
+
+            return value
+
+        else:
+            return fallback
+
     @property
     def applicationExecutable(self):
-        return os.environ.get("ApplicationExecutable", "owncloud")
+        return self._get_env_vars("ApplicationExecutable", "APPLICATION_EXECUTABLE", fallback="owncloud")
+
+    @property
+    def applicationShortname(self):
+        return self._get_env_vars("ApplicationShortname", "APPLICATION_SHORTNAME", fallback="owncloud")
+
+
 
     def fetch(self):
         if self.subinfo.options.dynamic.buildVfsWin:
@@ -118,14 +138,25 @@ class Package(CMakePackageBase):
     def install(self):
         if not super().install():
             return False
+
         if CraftCore.compiler.isWindows:
             # ensure we can find the sync-exclude.lst
-            configDir = Path(self.installDir()) / "config" / os.environ.get("ApplicationShortname", self.applicationExecutable)
+            configDirName = self.applicationShortname
+
+            if not configDirName:
+                configDirName = self.applicationExecutable
+
+            assert configDirName
+
+            configDir = Path(self.installDir()) / "config" / configDirName
+
             if not configDir.exists():
-                configDir = Path(self.installDir()) / "etc" / os.environ.get("ApplicationShortname", self.applicationExecutable)
+                configDir = Path(self.installDir()) / "etc" / configDirName
+
             if configDir.exists():
                 if not utils.mergeTree(configDir, Path(self.installDir()) / "bin"):
                     return False
+
         return True
 
     def dumpSymbols(self) -> bool:
