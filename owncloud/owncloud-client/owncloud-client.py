@@ -272,22 +272,10 @@ class Package(CMakePackageBase):
                 "description": self.subinfo.description,
             }
         ]
-<<<<<<< HEAD
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
         self.defines["appimage_apprun"] = self.packageDir() / "apprun.sh"
         self.defines["appimage_extra_output"] = ["native_packages"]
-=======
-        self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
-        self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
-        # TODO: use a temporary directory (or file) to store the generated script
-        assert utils.configureFile(
-            self.packageDir() / "AppRun.sh.in",
-            self.packageDir() / "AppRun.sh",
-            self.defines,
-        )
-        self.defines["appimage_apprun"] = self.packageDir() / "AppRun.sh"
->>>>>>> origin/4
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
