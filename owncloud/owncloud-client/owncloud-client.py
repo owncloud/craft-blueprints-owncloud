@@ -49,7 +49,9 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt/qtsvg"] = None
         self.runtimeDependencies["libs/qt/qtimageformats"] = None
         if CraftCore.compiler.isLinux:
-            self.runtimeDependencies["libs/qt/qtwayland"] = None
+            # Enable for 6.0 https://github.com/owncloud/client/issues/8328
+            # self.runtimeDependencies["libs/qt/qtwayland"] = None
+            pass
 
         if CraftPackageObject.get("libs/qt").instance.subinfo.options.dynamic.qtMajorVersion == "5":
             self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
@@ -120,8 +122,6 @@ class Package(CMakePackageBase):
     @property
     def applicationShortname(self):
         return self._get_env_vars("ApplicationShortname", "APPLICATION_SHORTNAME", fallback="owncloud")
-
-
 
     def fetch(self):
         if self.subinfo.options.dynamic.buildVfsWin:
@@ -272,10 +272,22 @@ class Package(CMakePackageBase):
                 "description": self.subinfo.description,
             }
         ]
+<<<<<<< HEAD
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
         self.defines["appimage_apprun"] = self.packageDir() / "apprun.sh"
         self.defines["appimage_extra_output"] = ["native_packages"]
+=======
+        self.defines["icon"] = Path(self.buildDir()) / "src/gui/owncloud.ico"
+        self.defines["pkgproj"] = Path(self.buildDir()) / "admin/osx/macosx.pkgproj"
+        # TODO: use a temporary directory (or file) to store the generated script
+        assert utils.configureFile(
+            self.packageDir() / "AppRun.sh.in",
+            self.packageDir() / "AppRun.sh",
+            self.defines,
+        )
+        self.defines["appimage_apprun"] = self.packageDir() / "AppRun.sh"
+>>>>>>> origin/4
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
