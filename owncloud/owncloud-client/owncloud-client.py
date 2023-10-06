@@ -49,10 +49,8 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt/qtsvg"] = None
         self.runtimeDependencies["libs/qt/qtimageformats"] = None
         if CraftCore.compiler.isLinux:
-            # Enable for 6.0 https://github.com/owncloud/client/issues/8328
-            # self.runtimeDependencies["libs/qt/qtwayland"] = None
-            pass
-
+            self.runtimeDependencies["libs/qt/qtwayland"] = None
+            
         if CraftPackageObject.get("libs/qt").instance.subinfo.options.dynamic.qtMajorVersion == "5":
             self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
             self.runtimeDependencies["libs/qt5/qtmacextras"] = None
