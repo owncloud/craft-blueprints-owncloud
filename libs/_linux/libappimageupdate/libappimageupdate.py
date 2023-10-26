@@ -23,7 +23,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/zsync2"] = None
         self.runtimeDependencies["libs/libappimage-minimal"] = None
         self.runtimeDependencies["libs/cpr"] = None
-        self.runtimeDependencies["libs/gpgme"] = None
+        self.runtimeDependencies["libs/gpgme/gpgme"] = None
         self.buildDependencies["libs/nlohmann-json"] = None
 
 class Package(CMakePackageBase):
