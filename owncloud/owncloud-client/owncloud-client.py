@@ -35,7 +35,6 @@ class subinfo(info.infoclass):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
-        self.buildDependencies["dev-utils/linuxdeploy-plugin-native-packages"] = None
 
         self.runtimeDependencies["libs/libre-graph-api-cpp-qt-client"] = None
         self.runtimeDependencies["libs/sparkle"] = None
@@ -50,7 +49,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt/qtimageformats"] = None
         if CraftCore.compiler.isLinux:
             self.runtimeDependencies["libs/qt/qtwayland"] = None
-            
+
         if CraftPackageObject.get("libs/qt").instance.subinfo.options.dynamic.qtMajorVersion == "5":
             self.runtimeDependencies["libs/qt5/qtxmlpatterns"] = None
             self.runtimeDependencies["libs/qt5/qtmacextras"] = None
