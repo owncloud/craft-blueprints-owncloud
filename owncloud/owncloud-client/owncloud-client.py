@@ -262,10 +262,14 @@ class Package(CMakePackageBase):
         self.defines["appimage_native_package_name"] = f'{self.applicationShortname.lower().replace("_", "-")}-client'
         self.defines["apppath"] = "Applications/KDE/" + self.applicationExecutable + ".app"
         self.defines["company"] = "ownCloud GmbH"
+
+        exePath = f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}"
+        if isinstance(self, NullsoftInstallerPackager):
+            exePath = f"bin/{exePath}"
         self.defines["shortcuts"] = [
             {
                 "name": self.subinfo.displayName,
-                "target": f"{self.defines['appname']}{CraftCore.compiler.executableSuffix}",
+                "target": exePath,
                 "description": self.subinfo.description,
             }
         ]
