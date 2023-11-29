@@ -275,8 +275,10 @@ class Package(CMakePackageBase):
         ]
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
-        self.defines["appimage_extra_output"] = ["native_packages"]
-        self.defines["appimage_extra_plugins"] = ["checkrt"]
+        if CraftPackageObject.get("dev-utils/linuxdeploy-plugin-native-packages").isInstalled:
+            self.defines["appimage_extra_output"] = ["native_packages"]
+        if CraftPackageObject.get("dev-utils/linuxdeploy-plugin-checkrt").isInstalled:
+            self.defines["appimage_extra_plugins"] = ["checkrt"]
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
