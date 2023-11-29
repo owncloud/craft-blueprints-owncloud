@@ -29,7 +29,7 @@ class subinfo(info.infoclass):
 
         self.description = "ownCloud Desktop Client"
         self.displayName = "ownCloud"
-        self.webpage = "https://owncloud.org"
+        self.webpage = "https://github.com/owncloud/client"
 
     def setDependencies(self):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
