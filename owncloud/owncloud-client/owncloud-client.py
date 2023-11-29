@@ -276,6 +276,7 @@ class Package(CMakePackageBase):
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
         self.defines["appimage_extra_output"] = ["native_packages"]
+        self.defines["appimage_extra_plugins"] = ["checkrt"]
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
