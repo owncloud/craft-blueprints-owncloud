@@ -35,7 +35,6 @@ class subinfo(info.infoclass):
         self.buildDependencies["craft/craft-blueprints-owncloud"] = None
         self.buildDependencies["dev-utils/cmake"] = None
         self.buildDependencies["kde/frameworks/extra-cmake-modules"] = None
-        self.buildDependencies["dev-utils/linuxdeploy-plugin-native-packages"] = None
 
         self.runtimeDependencies["libs/libre-graph-api-cpp-qt-client"] = None
         self.runtimeDependencies["libs/sparkle"] = None
@@ -274,7 +273,8 @@ class Package(CMakePackageBase):
         ]
         self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
-        self.defines["appimage_extra_output"] = ["native_packages"]
+        if CraftPackageObject.get("dev-utils/linuxdeploy-plugin-native-packages").isInstalled:
+            self.defines["appimage_extra_output"] = ["native_packages"]
         ver = self.owncloudVersion()
         if ver:
             self.defines["version"] = ver
