@@ -230,7 +230,7 @@ class Package(CMakePackageBase):
             CraftCore.log.warning(f"Failed to find {versionFile}")
             return None
 
-        print_var_script = os.path.join(self.packageDir(), "print-var.cmake")
+        print_var_script = os.path.join(self.blueprintDir(), "print-var.cmake")
 
         def get_var(name) -> str:
             command = ["cmake", f"-DTARGET_SCRIPT={os.path.basename(versionFile)}", f"-DTARGET_VAR={name}"]
@@ -257,7 +257,7 @@ class Package(CMakePackageBase):
         return version_str
 
     def createPackage(self):
-        self.blacklist_file.append(os.path.join(self.packageDir(), "blacklist.txt"))
+        self.blacklist_file.append(os.path.join(self.blueprintDir(), "blacklist.txt"))
         self.defines["appname"] = self.applicationExecutable
         self.defines["appimage_native_package_name"] = f'{self.applicationShortname.lower().replace("_", "-")}-client'
         self.defines["apppath"] = "Applications/KDE/" + self.applicationExecutable + ".app"

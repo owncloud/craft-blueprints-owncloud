@@ -49,7 +49,7 @@ class Package(AutoToolsPackageBase):
         if not utils.system([depot_tools / f"gclient{scriptSuffix}", "sync", "--revision", self.buildTarget], cwd=srcParent):
             return False
         for patch, lvl in self.subinfo.patchesToApply():
-            if not utils.applyPatch(self.sourceDir(), self.packageDir() / patch, lvl):
+            if not utils.applyPatch(self.sourceDir(), self.blueprintDir() / patch, lvl):
                 return False
         return True
 
