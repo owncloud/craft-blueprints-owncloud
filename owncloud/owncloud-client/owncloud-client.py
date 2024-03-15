@@ -47,6 +47,7 @@ class subinfo(info.infoclass):
         self.runtimeDependencies["libs/qt/qttranslations"] = None
         self.runtimeDependencies["libs/qt/qtsvg"] = None
         self.runtimeDependencies["libs/qt/qtimageformats"] = None
+        self.runtimeDependencies["libs/qt/qtdeclarative"] = None
         if CraftCore.compiler.isLinux:
             self.runtimeDependencies["libs/qt/qtwayland"] = None
 
