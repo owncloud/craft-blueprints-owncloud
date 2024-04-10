@@ -19,7 +19,7 @@ class subinfo(info.infoclass):
 
 
 class Package(CMakePackageBase):
-    def __init__(self, **args):
-        CMakePackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
         self.subinfo.options.configure.args += ["-DARGAGG_BUILD_EXAMPLES=OFF", "-DARGAGG_BUILD_TESTS=OFF", "-DARGAGG_BUILD_DOCS=OFF"]

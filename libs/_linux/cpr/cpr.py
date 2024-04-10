@@ -26,7 +26,7 @@ class subinfo(info.infoclass):
 
 
 class Package(CMakePackageBase):
-    def __init__(self, **args):
-        CMakePackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
         self.subinfo.options.configure.args += ["-DCPR_USE_SYSTEM_CURL=ON"]

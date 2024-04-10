@@ -75,8 +75,8 @@ from Package.CMakePackageBase import *
 
 
 class Package(CMakePackageBase):
-    def __init__(self):
-        CMakePackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.subinfo.options.fetch.checkoutSubmodules = True
         # TODO: fix msi generation which expects the existance of a /translation dir
         self.subinfo.options.package.moveTranslationsToBin = False

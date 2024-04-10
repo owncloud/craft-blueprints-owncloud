@@ -24,4 +24,4 @@ class subinfo(info.infoclass):
 
 class Package(SourceOnlyPackageBase):
     def __init__(self, **args):
-        SourceOnlyPackageBase.__init__(self)
+        super().__init__(**kwargs)

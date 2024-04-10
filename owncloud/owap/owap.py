@@ -28,8 +28,8 @@ from Package.CMakePackageBase import *
 
 
 class Package(CMakePackageBase):
-    def __init__(self):
-        CMakePackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def createPackage(self):
         self.addExecutableFilter(r"bin/(?!(owap)).*")

@@ -28,8 +28,8 @@ class subinfo(info.infoclass):
 
 
 class Package(BinaryPackageBase):
-    def __init__(self, **args):
-        BinaryPackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def install(self):
         if not super().install():

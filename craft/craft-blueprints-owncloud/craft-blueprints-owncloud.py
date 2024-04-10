@@ -15,8 +15,8 @@ from Package.SourceOnlyPackageBase import *
 
 
 class Package(SourceOnlyPackageBase):
-    def __init__(self):
-        SourceOnlyPackageBase.__init__(self)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.subinfo.options.package.disableBinaryCache = True
         self.subinfo.options.dailyUpdate = True
 
