@@ -17,6 +17,7 @@ class subinfo(info.infoclass):
             CraftHash.HashAlgorithm.SHA256,
         )
 
+        self.patchLevel["2.0.0-alpha-1-20230526"] = 1
         self.defaultTarget = "2.0.0-alpha-1-20230526"
 
     def setDependencies(self):
