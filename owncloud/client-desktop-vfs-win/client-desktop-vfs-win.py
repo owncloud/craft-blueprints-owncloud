@@ -26,4 +26,4 @@ from Package.VirtualPackageBase import *
 
 class Package(SourceComponentPackageBase):
     def __init__(self, **kwargs):
-        SourceComponentPackageBase.__init__(self)
+        super().__init__(**kwargs)
