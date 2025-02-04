@@ -1,5 +1,6 @@
 import info
-
+import os
+from CraftStandardDirs import CraftStandardDirs
 
 class subinfo(info.infoclass):
     def setTargets(self):
