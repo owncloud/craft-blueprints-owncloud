@@ -1,8 +1,5 @@
-import io
-import os
-import re
-
 import info
+from Utils import CraftHash
 
 
 class subinfo(info.infoclass):

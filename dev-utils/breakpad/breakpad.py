@@ -7,7 +7,8 @@ from Package.AutoToolsPackageBase import AutoToolsPackageBase
 from Package.CMakePackageBase import *
 from Package.MakeFilePackageBase import MakeFilePackageBase
 from Package.MSBuildPackageBase import MSBuildPackageBase
-
+from Blueprints.CraftPackageObject import CraftPackageObject
+from CraftCore import CraftCore
 
 class subinfo(info.infoclass):
     def registerOptions(self):
