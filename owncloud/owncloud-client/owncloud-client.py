@@ -1,15 +1,11 @@
-import configparser
-import glob
-import io
 import os
 import re
-import shutil
 import subprocess
-import sys
 
 import info
 from Packager.NullsoftInstallerPackager import NullsoftInstallerPackager
-
+from Blueprints.CraftPackageObject import CraftPackageObject
+from CraftCore import CraftCore
 
 class subinfo(info.infoclass):
     def registerOptions(self):
