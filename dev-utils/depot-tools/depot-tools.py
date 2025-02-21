@@ -18,7 +18,7 @@ class subinfo(info.infoclass):
         self.defaultTarget = "chrome/4147"
 
     def setDependencies(self):
-        self.buildDependencies["dev-utils/python3"] = None
+        self.buildDependencies["dev-utils/python"] = None
         self.buildDependencies["virtual/base"] = None
 
 
