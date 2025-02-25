@@ -1,6 +1,5 @@
 import stat
 import os
-from pathlib import Path
 
 import info
 import utils
