@@ -267,7 +267,7 @@ class Package(CMakePackageBase):
                 "description": self.subinfo.description,
             }
         ]
-        self.defines["icon"] = self.buildDir() / "src/gui/owncloud.ico"
+        self.defines["icon"] = self.buildDir() / f'src/gui/{self.applicationShortname.lower().replace("_", "-")}.ico'
         self.defines["pkgproj"] = self.buildDir() / "admin/osx/macosx.pkgproj"
         if CraftPackageObject.get("dev-utils/linuxdeploy-plugin-native-packages").isInstalled:
             self.defines["appimage_extra_output"] = ["native_packages"]
