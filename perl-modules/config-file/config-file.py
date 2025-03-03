@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import info
+import utils
 from Package.PerlPackageBase import *
 from Utils import CraftHash
+from Utils.Arguments import Arguments
 
 class subinfo(info.infoclass):
     def setDependencies(self):
