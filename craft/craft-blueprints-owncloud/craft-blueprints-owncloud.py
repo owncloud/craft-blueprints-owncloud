@@ -5,7 +5,7 @@ from CraftCore import CraftCore
 
 class subinfo(info.infoclass):
     def setTargets(self):
-        for ver in ["master", "5"]:
+        for ver in ["master", "6", "5"]:
             self.svnTargets[ver] = f"[git]https://github.com/owncloud/craft-blueprints-owncloud.git|{ver}|"
         self.defaultTarget = "master"
 
