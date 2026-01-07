@@ -155,7 +155,7 @@ class Package(CMakePackageBase):
         utils.cleanDirectory(dest)
         allowError = None
         if CraftCore.compiler.isWindows:
-            skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll|b2-1\.dll|ffi-8\.dll"
+            skipDumpPattern = r"icu\d\d\.dll|asprintf-0\.dll|b2-1\.dll|ffi-8\.dll|unistring-5\.dll"
             if CraftCore.compiler.isWindows:
                 for package in ["libs/runtime", "libs/d3dcompiler", "libs/gettext"]:
                     dbPackage = CraftCore.installdb.getInstalledPackages(CraftPackageObject.get(package))
